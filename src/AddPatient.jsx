@@ -28,7 +28,7 @@ const AddPatient = () => {
       }
 
       const res = await axios.post(
-        "https://backend-health-care-xr5d.vercel.app/api/patient/save",
+        "https://backend-health-care-97bf.vercel.app/api/patient/save",
         formData
       );
 
