@@ -1,87 +1,77 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
 
 const AddPatient = () => {
+  const [patientId, setPatientId] = useState("");
+  const [name, setName] = useState("");
+  const [vitals, setVitals] = useState("");
+  const [billingCode, setBillingCode] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
+  const [notes, setNotes] = useState("");
   const [file, setFile] = useState(null);
 
-  const formik = useFormik({
-    initialValues: {
-      patientId: "",
-      name: "",
-      vitals: "",
-      billingCode: "",
-      diagnosis: "",
-      notes: "",
-    },
-    validationSchema: Yup.object({
-      patientId: Yup.number().required("Required"),
-      name: Yup.string().required("Required"),
-    }),
-    onSubmit: async (values, { resetForm }) => {
-      try {
-       const formData = new FormData();
-formData.append("patientId", patientId);
-formData.append("name", name);
-formData.append("vitals", vitals);
-formData.append("billingCode", billingCode);
-formData.append("diagnosis", diagnosis);
-formData.append("notes", notes);
-formData.append("image", file); // MUST be "image" to match backend
+  const onSubmit = async (e) => {
+    e.preventDefault();
 
-await axios.post("https://backend-health-care-xr5d.vercel.app/api/patient/save", formData, {
-  headers: { "Content-Type": "multipart/form-data" },
-});
-      } catch (err) {
-        console.error("Upload failed:", err);
-        alert(err.response?.data?.message || "Upload failed");
-      }
-    },
-  });
+    try {
+      const formData = new FormData();
+      formData.append("patientId", patientId);
+      formData.append("name", name);
+      formData.append("vitals", vitals);
+      formData.append("billingCode", billingCode);
+      formData.append("diagnosis", diagnosis);
+      formData.append("notes", notes);
+      formData.append("image", file);
+
+      const res = await axios.post(
+        "https://backend-health-care-xr5d.vercel.app/api/patient/save",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      console.log("Upload success:", res.data);
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+  };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={onSubmit}>
       <input
-        type="number"
-        name="patientId"
+        type="text"
         placeholder="Patient ID"
-        onChange={formik.handleChange}
-        value={formik.values.patientId}
+        value={patientId}
+        onChange={(e) => setPatientId(e.target.value)}
       />
       <input
         type="text"
-        name="name"
         placeholder="Name"
-        onChange={formik.handleChange}
-        value={formik.values.name}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
       />
       <input
         type="text"
-        name="vitals"
         placeholder="Vitals"
-        onChange={formik.handleChange}
-        value={formik.values.vitals}
-      />
-      <input
-        type="number"
-        name="billingCode"
-        placeholder="Billing Code"
-        onChange={formik.handleChange}
-        value={formik.values.billingCode}
+        value={vitals}
+        onChange={(e) => setVitals(e.target.value)}
       />
       <input
         type="text"
-        name="diagnosis"
-        placeholder="Diagnosis"
-        onChange={formik.handleChange}
-        value={formik.values.diagnosis}
+        placeholder="Billing Code"
+        value={billingCode}
+        onChange={(e) => setBillingCode(e.target.value)}
       />
-      <textarea
-        name="notes"
+      <input
+        type="text"
+        placeholder="Diagnosis"
+        value={diagnosis}
+        onChange={(e) => setDiagnosis(e.target.value)}
+      />
+      <input
+        type="text"
         placeholder="Notes"
-        onChange={formik.handleChange}
-        value={formik.values.notes}
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
       />
       <input
         type="file"
