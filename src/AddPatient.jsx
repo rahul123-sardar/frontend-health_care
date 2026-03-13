@@ -16,10 +16,12 @@ function AddPatient() {
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef(null);
 
+  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Compress image
   const compressImage = (file, maxWidth = 800, maxHeight = 800) => {
     return new Promise((resolve) => {
       const img = new Image();
@@ -28,11 +30,13 @@ function AddPatient() {
         const canvas = document.createElement("canvas");
         let width = img.width;
         let height = img.height;
+
         if (width > maxWidth || height > maxHeight) {
           const scale = Math.min(maxWidth / width, maxHeight / height);
           width *= scale;
           height *= scale;
         }
+
         canvas.width = width;
         canvas.height = height;
         canvas.getContext("2d").drawImage(img, 0, 0, width, height);
@@ -41,6 +45,7 @@ function AddPatient() {
     });
   };
 
+  // Handle file upload
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -52,6 +57,7 @@ function AddPatient() {
     reader.readAsDataURL(file);
   };
 
+  // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
@@ -71,7 +77,7 @@ function AddPatient() {
           onUploadProgress: (event) => {
             const percent = Math.round((event.loaded * 100) / event.total);
             setProgress(percent);
-          }
+          },
         }
       );
 
@@ -83,7 +89,7 @@ function AddPatient() {
         vitals: "",
         billingCode: "",
         diagnosis: "",
-        notes: ""
+        notes: "",
       });
       setImage(null);
       setPreview(null);
@@ -105,51 +111,27 @@ function AddPatient() {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Patient Info Section */}
+          {/* Patient Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">Patient ID</label>
-              <input
-                type="number"
-                name="patientId"
-                value={formData.patientId}
-                onChange={handleChange}
-                required
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">Vitals</label>
-              <input
-                type="text"
-                name="vitals"
-                value={formData.vitals}
-                onChange={handleChange}
-                placeholder="120/80, 98.6F"
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">Billing Code</label>
-              <input
-                type="number"
-                name="billingCode"
-                value={formData.billingCode}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
+            {[
+              { label: "Patient ID", name: "patientId", type: "number" },
+              { label: "Name", name: "name", type: "text" },
+              { label: "Vitals", name: "vitals", type: "text", placeholder: "120/80, 98.6F" },
+              { label: "Billing Code", name: "billingCode", type: "number" },
+            ].map((field) => (
+              <div key={field.name}>
+                <label className="block font-medium text-gray-700 mb-1">{field.label}</label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  placeholder={field.placeholder || ""}
+                  required={field.name === "patientId" || field.name === "name"}
+                  className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                />
+              </div>
+            ))}
           </div>
 
           {/* Diagnosis & Notes */}
@@ -163,6 +145,7 @@ function AddPatient() {
               className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
             />
           </div>
+
           <div>
             <label className="block font-medium text-gray-700 mb-1">Doctor Notes</label>
             <textarea
@@ -183,12 +166,15 @@ function AddPatient() {
               className="w-full border p-2 rounded-xl mb-2"
             />
             {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-10 h-10 object-cover rounded-xl border shadow-md"
-              />
+              <div className="border rounded-xl shadow-md w-24 h-32 flex items-center justify-center overflow-hidden bg-gray-100">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="object-cover w-full h-full"
+                />
+              </div>
             )}
+            {preview && <p className="text-gray-500 text-sm mt-1">Passport-size preview</p>}
           </div>
 
           {/* Upload Progress */}
@@ -197,7 +183,7 @@ function AddPatient() {
               <div
                 className="bg-indigo-500 h-3 rounded transition-all duration-300"
                 style={{ width: `${progress}%` }}
-              ></div>
+              />
             </div>
           )}
 
