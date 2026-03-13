@@ -10,9 +10,8 @@ const AddPatient = () => {
     diagnosis: "",
     notes: "",
   });
-  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -21,41 +20,15 @@ const AddPatient = () => {
     setPatient({ ...patient, [e.target.name]: e.target.value });
   };
 
-  // Handle file select and preview
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  // Handle file select & preview
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (!selectedFile) return;
 
-    // Preview
     const reader = new FileReader();
     reader.onload = () => setPreview(reader.result);
-    reader.readAsDataURL(file);
-
-    // Upload to Cloudinary
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "patient_unsigned"); // replace with your unsigned preset
-
-    try {
-      setLoading(true);
-      setProgress(0);
-
-      const res = await axios.post(
-        "https://api.cloudinary.com/v1_1/dchn8rrno/image/upload", // your cloud name
-        formData,
-        {
-          onUploadProgress: (e) =>
-            setProgress(Math.round((e.loaded * 100) / e.total)),
-        }
-      );
-      setImageUrl(res.data.secure_url);
-      alert("Image uploaded successfully!");
-    } catch (err) {
-      console.error("Cloudinary error:", err);
-      alert("Image upload failed!");
-    } finally {
-      setLoading(false);
-    }
+    reader.readAsDataURL(selectedFile);
   };
 
   // Handle form submit
@@ -65,19 +38,28 @@ const AddPatient = () => {
       alert("Patient ID and Name are required!");
       return;
     }
-    if (!imageUrl) {
-      alert("Please upload an image first!");
-      return;
-    }
 
-    const payload = { ...patient, image: imageUrl };
+    const formData = new FormData();
+    Object.entries(patient).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    if (file) formData.append("image", file);
 
     try {
       setLoading(true);
+      setProgress(0);
+
       const res = await axios.post(
         "https://backend-health-care-xr5d.vercel.app/api/patient/save",
-        payload
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (e) => {
+            setProgress(Math.round((e.loaded * 100) / e.total));
+          },
+        }
       );
+
       alert(res.data.message || "Patient saved successfully!");
       setPatient({
         patientId: "",
@@ -87,9 +69,8 @@ const AddPatient = () => {
         diagnosis: "",
         notes: "",
       });
-      setImage(null);
+      setFile(null);
       setPreview(null);
-      setImageUrl("");
       setProgress(0);
     } catch (err) {
       console.error(err);
@@ -109,96 +90,83 @@ const AddPatient = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block font-medium text-gray-700 mb-1">
-                Patient ID
-              </label>
+              <label>Patient ID</label>
               <input
                 type="number"
                 name="patientId"
                 value={patient.patientId}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-                required
+                className="w-full p-3 border rounded-xl"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-gray-700 mb-1">
-                Name
-              </label>
+              <label>Name</label>
               <input
                 type="text"
                 name="name"
                 value={patient.name}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-                required
+                className="w-full p-3 border rounded-xl"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-gray-700 mb-1">
-                Vitals
-              </label>
+              <label>Vitals</label>
               <input
                 type="text"
                 name="vitals"
                 value={patient.vitals}
                 onChange={handleChange}
                 placeholder="120/80, 98.6F"
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                className="w-full p-3 border rounded-xl"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-gray-700 mb-1">
-                Billing Code
-              </label>
+              <label>Billing Code</label>
               <input
                 type="number"
                 name="billingCode"
                 value={patient.billingCode}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                className="w-full p-3 border rounded-xl"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-medium text-gray-700 mb-1">
-              Diagnosis
-            </label>
+            <label>Diagnosis</label>
             <input
               type="text"
               name="diagnosis"
               value={patient.diagnosis}
               onChange={handleChange}
-              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-3 border rounded-xl"
             />
           </div>
 
           <div>
-            <label className="block font-medium text-gray-700 mb-1">
-              Doctor Notes
-            </label>
+            <label>Doctor Notes</label>
             <textarea
               name="notes"
               value={patient.notes}
               onChange={handleChange}
-              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-3 border rounded-xl"
             />
           </div>
 
           {/* File Upload */}
-          <div className="flex flex-col items-center">
+          <div>
+            <label>Patient Image</label>
             <input
               type="file"
-              accept="image/png, image/jpeg"
+              accept="image/*"
               onChange={handleFileChange}
-              className="w-full border p-2 rounded-xl mb-2"
+              className="w-full border p-2 rounded-xl"
             />
             {preview && (
-              <div className="w-24 h-32 border rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
+              <div className="w-24 h-32 mt-2 border rounded-xl overflow-hidden">
                 <img
                   src={preview}
                   alt="preview"
@@ -209,7 +177,7 @@ const AddPatient = () => {
             {loading && (
               <div className="w-full bg-gray-200 h-3 rounded mt-2">
                 <div
-                  className="bg-indigo-500 h-3 rounded transition-all duration-300"
+                  className="bg-indigo-500 h-3 rounded"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -219,10 +187,8 @@ const AddPatient = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-2xl font-semibold text-white transition-all duration-200 ${
-              loading
-                ? "bg-gray-400"
-                : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+            className={`w-full py-3 mt-4 text-white rounded-2xl ${
+              loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"
             }`}
           >
             {loading ? `Saving... ${progress}%` : "Save Patient"}
