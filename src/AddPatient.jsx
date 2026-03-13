@@ -19,28 +19,37 @@ const AddPatient = () => {
       patientId: Yup.number().required("Required"),
       name: Yup.string().required("Required"),
     }),
-    onSubmit: async (values, { resetForm }) => {  // <-- resetForm comes from Formik
-      try {
-        const formData = new FormData();
-        Object.entries(values).forEach(([key, value]) =>
-          formData.append(key, value)
-        );
-        if (file) formData.append("image", file);
+  onSubmit: async (values, { resetForm }) => {
+  try {
+    // Create FormData object to handle file + other fields
+    const formData = new FormData();
 
-        const res = await axios.post(
-          "https://backend-health-care-xr5d.vercel.app/api/patient/save",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+    // Append all form values
+    Object.entries(values).forEach(([key, value]) => {
+      if (value !== "") formData.append(key, value);
+    });
 
-        alert(res.data.message || "Patient saved successfully!");
-        resetForm(); // <-- now resetForm is defined
-        setFile(null);
-      } catch (err) {
-        console.error(err);
-        alert("Upload failed");
+    // Append file if selected
+    if (file) formData.append("image", file);
+
+    // Send to backend
+    const res = await axios.post(
+      "https://backend-health-care-xr5d.vercel.app/api/patient/save",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
       }
-    },
+    );
+
+    // Success
+    alert(res.data.message || "Patient saved successfully!");
+    resetForm(); // reset all Formik fields
+    setFile(null); // clear file state
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert(err.response?.data?.message || "Upload failed");
+  }
+},
   });
 
   return (
