@@ -1,3 +1,4 @@
+// App.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
@@ -15,15 +16,14 @@ function App() {
     image: null,
   });
 
-  // Correct backend URL
   const API_BASE_URL =
     import.meta.env.VITE_BACKEND_URL ||
-    "https://backend-health-care-97bf.vercel.app/api/patient"; // <- add /api/patient
+    "https://backend-health-care-97bf.vercel.app/api/patient";
 
   // Fetch patients
   const fetchPatients = async () => {
     try {
-      const res = await axios.get(API_BASE_URL); // GET https://.../api/patient
+      const res = await axios.get(API_BASE_URL); // GET /api/patient
       setPatients(res.data);
     } catch (err) {
       console.error("Failed to fetch patients:", err);
@@ -31,48 +31,11 @@ function App() {
     }
   };
 
-  // Handle role buttons
-  const handleRole = (roleName) => setRole(roleName);
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === "image" ? files[0] : value,
-    });
-  };
-
-  // Submit patient
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key]) data.append(key, formData[key]);
-      });
-
-      await axios.post(`${API_BASE_URL}/save`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      alert("Patient added successfully!");
-      setFormData({
-        patientId: "",
-        name: "",
-        vitals: "",
-        billingCode: "",
-        diagnosis: "",
-        notes: "",
-        image: null,
-      });
-      fetchPatients();
-    } catch (err) {
-      console.error("Error adding patient:", err);
-      alert("Failed to add patient.");
-    }
-  };
-
+  // Role-based configuration
   const roleConfig = {
     Nurse: {
       title: "Nurse View",
@@ -96,9 +59,45 @@ function App() {
     },
   };
 
-  useEffect(() => {
-    fetchPatients();
-  }, []);
+  // Handle form input change
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === "image" ? files[0] : value,
+    });
+  };
+
+  // Submit new patient
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (formData[key]) data.append(key, formData[key]);
+      });
+
+      await axios.post(`${API_BASE_URL}/save`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert("Patient added successfully!");
+      setFormData({
+        patientId: "",
+        name: "",
+        vitals: "",
+        billingCode: "",
+        diagnosis: "",
+        notes: "",
+        image: null,
+      });
+
+      fetchPatients(); // Refresh list
+    } catch (err) {
+      console.error("Failed to add patient:", err);
+      alert("Failed to add patient.");
+    }
+  };
 
   return (
     <div className="bg-gray-100 p-8 min-h-screen main-container">
@@ -106,15 +105,15 @@ function App() {
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow mb-6">
         <h2 className="text-2xl font-bold mb-4">Add Patient</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          {["patientId", "name", "vitals", "billingCode", "diagnosis", "notes"].map((f) => (
+          {["patientId", "name", "vitals", "billingCode", "diagnosis", "notes"].map((field) => (
             <input
-              key={f}
+              key={field}
               type="text"
-              placeholder={f.charAt(0).toUpperCase() + f.slice(1)}
-              name={f}
-              value={formData[f]}
+              name={field}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              value={formData[field]}
               onChange={handleChange}
-              required={f === "patientId" || f === "name"}
+              required={field === "patientId" || field === "name"}
             />
           ))}
           <input type="file" name="image" onChange={handleChange} />
@@ -131,8 +130,8 @@ function App() {
           {["Nurse", "Billing", "Unauthorized"].map((r) => (
             <button
               key={r}
-              onClick={() => handleRole(r)}
-              className={`px-4 py-2 rounded btn ${
+              onClick={() => setRole(r)}
+              className={`px-4 py-2 rounded ${
                 r === "Nurse" ? "bg-green-600 text-white" : r === "Billing" ? "bg-yellow-500 text-white" : "bg-red-500 text-white"
               }`}
             >
@@ -162,7 +161,7 @@ function App() {
             );
           })}
 
-        {/* Unauthorized */}
+        {/* Unauthorized View */}
         {role === "Unauthorized" && (
           <div className={`${roleConfig.Unauthorized.bg} p-4 border ${roleConfig.Unauthorized.border} patient-box`}>
             <h2 className="font-bold text-red-700">{roleConfig.Unauthorized.title}</h2>
