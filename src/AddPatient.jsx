@@ -182,7 +182,7 @@ const AddPatient = () => {
             <input
               type="file"
               ref={fileInputRef}
-              accept="image/png, image/jpeg"
+              accept="image/png, image/jpeg, image/jpg, image/avif, image/webp"
               onChange={handleFileChange}
               className="w-full border p-2 rounded-xl mb-2"
             />
