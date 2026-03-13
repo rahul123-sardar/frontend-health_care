@@ -46,9 +46,9 @@ function App() {
           </button>
 
         </div>
-
+<h2 className="font-bold">Nurse View</h2>
        {role === "Nurse" && data && data.map((patient) => (
-    <div><h2 className="font-bold">Nurse View</h2>
+
   <div
   key={patient._id}
   className="bg-green-50 p-4 border border-green-400 mb-3 patient-box nurse-view">
@@ -64,7 +64,6 @@ function App() {
     <p>Diagnosis: {patient.diagnosis}</p>
     <p>Notes: {patient.notes}</p>
 
-  </div>
   </div>
 
 ))}
