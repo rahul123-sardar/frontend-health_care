@@ -51,42 +51,76 @@ function AddPatient() {
   // };
 
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
+//   const handleSubmit = async (e) => {
+//   e.preventDefault();
 
-  const data = new FormData();
+//   const data = new FormData();
 
-data.append("patientId", formData.patientId);
-data.append("name", formData.name);
-data.append("vitals", formData.vitals);
-data.append("billingCode", formData.billingCode);
-data.append("diagnosis", formData.diagnosis);
-data.append("notes", formData.notes);
-if (image) {
-  data.append("image", image);
-}
+// data.append("patientId", formData.patientId);
+// data.append("name", formData.name);
+// data.append("vitals", formData.vitals);
+// data.append("billingCode", formData.billingCode);
+// data.append("diagnosis", formData.diagnosis);
+// data.append("notes", formData.notes);
+// if (image) {
+//   data.append("image", image);
+// }
 
-  try {
+//   try {
 
-    const res = await axios.post(
-  "https://backend-health-care-xr5d.vercel.app/api/patient/save",
-  data,
-  {
-    headers: {
-      "Content-Type": "multipart/form-data"
-    }
-  }
-);
+//     const res = await axios.post(
+//   "https://backend-health-care-xr5d.vercel.app/api/patient/save",
+//   data,
+//   {
+//     headers: {
+//       "Content-Type": "multipart/form-data"
+//     }
+//   }
+// );
     
 
+//     alert(res.data.message);
+
+//   } catch (error) {
+//   console.log("AXIOS ERROR:", error);
+//   console.log("SERVER RESPONSE:", error.response?.data);
+
+//   alert(error.response?.data?.message || "Server error");
+// }
+// };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const data = new FormData();
+  Object.entries(formData).forEach(([key, value]) => data.append(key, value));
+  if (image) data.append("image", image);
+
+  try {
+    const res = await axios.post(
+      "https://backend-health-care-xr5d.vercel.app/api/patient/save",
+      data,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
     alert(res.data.message);
 
+    // Reset form
+    setFormData({
+      patientId: "",
+      name: "",
+      vitals: "",
+      billingCode: "",
+      diagnosis: "",
+      notes: ""
+    });
+    setImage(null);
   } catch (error) {
-  console.log("AXIOS ERROR:", error);
-  console.log("SERVER RESPONSE:", error.response?.data);
-
-  alert(error.response?.data?.message || "Server error");
-}
+    console.log("AXIOS ERROR:", error);
+    alert(error.response?.data?.message || "Server error");
+  } finally {
+    setLoading(false);
+  }
 };
 
   return (
