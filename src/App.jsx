@@ -1,4 +1,3 @@
-// App.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
@@ -16,13 +15,15 @@ function App() {
     image: null,
   });
 
+  // Correct backend URL
   const API_BASE_URL =
-    import.meta.env.VITE_BACKEND_URL || "https://backend-health-care-97bf.vercel.app/api";
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://backend-health-care-97bf.vercel.app/api/patient"; // <- add /api/patient
 
   // Fetch patients
   const fetchPatients = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/patient`);
+      const res = await axios.get(API_BASE_URL); // GET https://.../api/patient
       setPatients(res.data);
     } catch (err) {
       console.error("Failed to fetch patients:", err);
@@ -31,18 +32,15 @@ function App() {
   };
 
   // Handle role buttons
-  const handleRole = (roleName) => {
-    setRole(roleName);
-  };
+  const handleRole = (roleName) => setRole(roleName);
 
   // Handle input change
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "image") {
-      setFormData({ ...formData, image: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({
+      ...formData,
+      [name]: name === "image" ? files[0] : value,
+    });
   };
 
   // Submit patient
@@ -51,10 +49,10 @@ function App() {
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        if (formData[key] !== null) data.append(key, formData[key]);
+        if (formData[key]) data.append(key, formData[key]);
       });
 
-      await axios.post(`${API_BASE_URL}/patient/save`, data, {
+      await axios.post(`${API_BASE_URL}/save`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -68,15 +66,13 @@ function App() {
         notes: "",
         image: null,
       });
-
-      fetchPatients(); // Refresh list after adding
+      fetchPatients();
     } catch (err) {
       console.error("Error adding patient:", err);
       alert("Failed to add patient.");
     }
   };
 
-  // Role configuration for mapping
   const roleConfig = {
     Nurse: {
       title: "Nurse View",
@@ -100,7 +96,6 @@ function App() {
     },
   };
 
-  // Fetch patients on mount
   useEffect(() => {
     fetchPatients();
   }, []);
@@ -111,55 +106,19 @@ function App() {
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow mb-6">
         <h2 className="text-2xl font-bold mb-4">Add Patient</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            type="text"
-            placeholder="Patient ID"
-            name="patientId"
-            value={formData.patientId}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Vitals"
-            name="vitals"
-            value={formData.vitals}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            placeholder="Billing Code"
-            name="billingCode"
-            value={formData.billingCode}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            placeholder="Diagnosis"
-            name="diagnosis"
-            value={formData.diagnosis}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            placeholder="Notes"
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-          />
+          {["patientId", "name", "vitals", "billingCode", "diagnosis", "notes"].map((f) => (
+            <input
+              key={f}
+              type="text"
+              placeholder={f.charAt(0).toUpperCase() + f.slice(1)}
+              name={f}
+              value={formData[f]}
+              onChange={handleChange}
+              required={f === "patientId" || f === "name"}
+            />
+          ))}
           <input type="file" name="image" onChange={handleChange} />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
-          >
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded mt-2">
             Add Patient
           </button>
         </form>
@@ -167,20 +126,14 @@ function App() {
 
       {/* Role Buttons */}
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow mb-6">
-        <h1 className="text-3xl font-bold text-blue-800 mb-4">
-          Secure PHI Access Simulator
-        </h1>
+        <h1 className="text-3xl font-bold text-blue-800 mb-4">Secure PHI Access Simulator</h1>
         <div className="flex gap-4 mb-4">
           {["Nurse", "Billing", "Unauthorized"].map((r) => (
             <button
               key={r}
               onClick={() => handleRole(r)}
               className={`px-4 py-2 rounded btn ${
-                r === "Nurse"
-                  ? "bg-green-600 text-white"
-                  : r === "Billing"
-                  ? "bg-yellow-500 text-white"
-                  : "bg-red-500 text-white"
+                r === "Nurse" ? "bg-green-600 text-white" : r === "Billing" ? "bg-yellow-500 text-white" : "bg-red-500 text-white"
               }`}
             >
               {r}
@@ -198,30 +151,21 @@ function App() {
                 className={`${config.bg} p-4 border ${config.border} mb-3 patient-box`}
               >
                 <h2 className="font-bold">{config.title}</h2>
-                {config.showImage && patient.image && (
-                  <img src={patient.image} width="120" alt="patient" />
-                )}
+                {config.showImage && patient.image && <img src={patient.image} width="120" alt="patient" />}
                 {config.fields.map((field) => (
                   <p key={field}>
-                    {field.charAt(0).toUpperCase() + field.slice(1)}:{" "}
-                    {patient[field]}
+                    {field.charAt(0).toUpperCase() + field.slice(1)}: {patient[field]}
                   </p>
                 ))}
-                {config.accessDenied && (
-                  <p className="text-red-600 mt-2">{config.accessDenied}</p>
-                )}
+                {config.accessDenied && <p className="text-red-600 mt-2">{config.accessDenied}</p>}
               </div>
             );
           })}
 
-        {/* Unauthorized View */}
+        {/* Unauthorized */}
         {role === "Unauthorized" && (
-          <div
-            className={`${roleConfig.Unauthorized.bg} p-4 border ${roleConfig.Unauthorized.border} patient-box`}
-          >
-            <h2 className="font-bold text-red-700">
-              {roleConfig.Unauthorized.title}
-            </h2>
+          <div className={`${roleConfig.Unauthorized.bg} p-4 border ${roleConfig.Unauthorized.border} patient-box`}>
+            <h2 className="font-bold text-red-700">{roleConfig.Unauthorized.title}</h2>
           </div>
         )}
       </div>
