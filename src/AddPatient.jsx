@@ -186,11 +186,7 @@ const AddPatient = () => {
               onChange={handleFileChange}
               className="w-full border p-2 rounded-xl mb-2"
             />
-            {preview && (
-              <div className="border rounded-xl shadow-md w-24 h-32 flex items-center justify-center overflow-hidden bg-gray-100">
-                <img src={preview} alt="Preview" className="object-cover w-full h-full" />
-              </div>
-            )}
+           
           </div>
 
           {/* Upload Progress */}
