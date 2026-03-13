@@ -170,11 +170,11 @@ function AddPatient() {
                 <img
                   src={preview}
                   alt="Preview"
-                  className="object-cover w-full h-full"
+                  className="object-cover w-5 h-5"
                 />
               </div>
             )}
-            {preview && <p className="text-gray-500 text-sm mt-1">Passport-size preview</p>}
+           
           </div>
 
           {/* Upload Progress */}
