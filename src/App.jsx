@@ -17,7 +17,7 @@ function App() {
   });
 
   const API_BASE_URL =
-    import.meta.env.VITE_BACKEND_URL || "https://backend-health-care-97bf.vercel.app/api/patient";
+    import.meta.env.VITE_BACKEND_URL || "https://backend-health-care-97bf.vercel.app/api";
 
   // Fetch patients
   const fetchPatients = async () => {
