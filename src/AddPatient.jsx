@@ -62,7 +62,7 @@ const AddPatient = () => {
     // Upload to Cloudinary
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "YOUR_UPLOAD_PRESET"); // Set in Cloudinary
+    formData.append("upload_preset", "patients"); // Set in Cloudinary
     setLoading(true);
     setProgress(0);
 
