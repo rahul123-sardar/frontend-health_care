@@ -122,7 +122,7 @@ function AddPatient() {
             placeholder="Patient ID"
             required
             className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br /><br />
+          /><br />
           <input
             type="text"
             name="name"
@@ -131,7 +131,7 @@ function AddPatient() {
             placeholder="Patient Name"
             required
             className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br /><br />
+          /><br />
           <input
             type="text"
             name="vitals"
@@ -139,7 +139,7 @@ function AddPatient() {
             onChange={handleChange}
             placeholder="Vitals (e.g., 120/80, 98.6F)"
             className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br /><br />
+          /><br />
           <input
             type="number"
             name="billingCode"
@@ -147,7 +147,7 @@ function AddPatient() {
             onChange={handleChange}
             placeholder="Billing Code"
             className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br /><br />
+          /><br />
           <input
             type="text"
             name="diagnosis"
@@ -155,14 +155,14 @@ function AddPatient() {
             onChange={handleChange}
             placeholder="Diagnosis"
             className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br /><br />
+          /><br />
           <textarea
             name="notes"
             value={formData.notes}
             onChange={handleChange}
             placeholder="Doctor Notes"
             className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br /><br />
+          /><br />
 
           <div className="flex flex-col items-center">
             <input
@@ -179,7 +179,7 @@ function AddPatient() {
                 className="w-32 h-32 object-cover rounded-lg border mt-2 shadow-md"
               />
             )}
-          </div><br /><br />
+          </div><br />
 
           {loading && (
             <div className="w-full bg-gray-200 h-3 rounded mt-2">
