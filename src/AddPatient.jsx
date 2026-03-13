@@ -33,52 +33,29 @@ const AddPatient = () => {
 
   // Handle form submit
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!patient.patientId || !patient.name) {
-      alert("Patient ID and Name are required!");
-      return;
-    }
+  e.preventDefault();
 
-    const formData = new FormData();
-    Object.entries(patient).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-    if (file) formData.append("image", file);
+  const formData = new FormData();
+  formData.append("patientId", formik.values.patientId);
+  formData.append("name", formik.values.name);
+  formData.append("vitals", formik.values.vitals);
+  formData.append("billingCode", formik.values.billingCode);
+  formData.append("diagnosis", formik.values.diagnosis);
+  formData.append("notes", formik.values.notes);
+  if (file) formData.append("image", file); // file from <input type="file" />
 
-    try {
-      setLoading(true);
-      setProgress(0);
-
-      const res = await axios.post(
-        "https://backend-health-care-xr5d.vercel.app/api/patient/save",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: (e) => {
-            setProgress(Math.round((e.loaded * 100) / e.total));
-          },
-        }
-      );
-
-      alert(res.data.message || "Patient saved successfully!");
-      setPatient({
-        patientId: "",
-        name: "",
-        vitals: "",
-        billingCode: "",
-        diagnosis: "",
-        notes: "",
-      });
-      setFile(null);
-      setPreview(null);
-      setProgress(0);
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Server error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const res = await axios.post(
+      "https://backend-health-care-xr5d.vercel.app/api/patient/save",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    alert(res.data.message);
+  } catch (err) {
+    console.error(err);
+    alert("Upload failed");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
