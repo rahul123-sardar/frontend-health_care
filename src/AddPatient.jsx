@@ -6,7 +6,6 @@ import axios from "axios";
 const AddPatient = () => {
   const [file, setFile] = useState(null);
 
-  // Define useFormik inside the component
   const formik = useFormik({
     initialValues: {
       patientId: "",
@@ -22,26 +21,18 @@ const AddPatient = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const formData = new FormData();
+       const formData = new FormData();
+formData.append("patientId", patientId);
+formData.append("name", name);
+formData.append("vitals", vitals);
+formData.append("billingCode", billingCode);
+formData.append("diagnosis", diagnosis);
+formData.append("notes", notes);
+formData.append("image", file); // MUST be "image" to match backend
 
-        // Append form values
-        Object.entries(values).forEach(([key, value]) => {
-          if (value !== "") formData.append(key, value);
-        });
-
-        // Append file if selected
-        if (file) formData.append("image", file);
-
-        // Send to backend
-        const res = await axios.post(
-          "https://backend-health-care-xr5d.vercel.app/api/patient/save",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-
-        alert(res.data.message || "Patient saved successfully!");
-        resetForm(); // <-- Works because it's inside useFormik
-        setFile(null);
+await axios.post("https://backend-health-care-xr5d.vercel.app/api/patient/save", formData, {
+  headers: { "Content-Type": "multipart/form-data" },
+});
       } catch (err) {
         console.error("Upload failed:", err);
         alert(err.response?.data?.message || "Upload failed");
