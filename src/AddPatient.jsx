@@ -51,39 +51,39 @@ const AddPatient = () => {
   });
 
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const file = e.target.files[0];
+  if (!file) return;
 
-    // Preview
-    const reader = new FileReader();
-    reader.onload = () => setPreview(reader.result);
-    reader.readAsDataURL(file);
+  // Preview
+  const reader = new FileReader();
+  reader.onload = () => setPreview(reader.result);
+  reader.readAsDataURL(file);
 
-    // Upload to Cloudinary
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "patient_unsigned"); // Set in Cloudinary
+  // Upload to Cloudinary
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "patient_unsigned"); // unsigned preset name
+
+  try {
     setLoading(true);
     setProgress(0);
-
-    try {
-      const res = await axios.post(
-        "https://api.cloudinary.com/v1_1/dchn8rrno/image/upload",
-        formData,
-        {
-          onUploadProgress: (e) => {
-            setProgress(Math.round((e.loaded * 100) / e.total));
-          },
-        }
-      );
-      setImageUrl(res.data.secure_url);
-    } catch (err) {
-      console.error("Cloudinary upload error:", err);
-      alert("Image upload failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const res = await axios.post(
+      "https://api.cloudinary.com/v1_1/dchn8rrno/image/upload", // YOUR CLOUD NAME
+      formData,
+      {
+        onUploadProgress: (e) => {
+          setProgress(Math.round((e.loaded * 100) / e.total));
+        },
+      }
+    );
+    setImageUrl(res.data.secure_url);
+  } catch (err) {
+    console.error("Cloudinary upload error:", err);
+    alert("Image upload failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
