@@ -61,33 +61,38 @@ function App() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key]) data.append(key, formData[key]);
-      });
+  e.preventDefault();
+  try {
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      let value = formData[key];
+      if (key === "patientId" || key === "billingCode") {
+        value = Number(value);
+      }
+      if (value) data.append(key, value);
+    });
 
-      await axios.post(`${API_BASE_URL}/save`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    await axios.post(`${API_BASE_URL}/save`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-      alert("Patient added successfully!");
-      setFormData({
-        patientId: "",
-        name: "",
-        vitals: "",
-        billingCode: "",
-        diagnosis: "",
-        notes: "",
-        image: null,
-      });
-      fetchPatients();
-    } catch (err) {
-      console.error("Failed to add patient:", err);
-      alert("Failed to add patient.");
-    }
-  };
+    alert("Patient added successfully!");
+    setFormData({
+      patientId: "",
+      name: "",
+      vitals: "",
+      billingCode: "",
+      diagnosis: "",
+      notes: "",
+      image: null,
+    });
+
+    fetchPatients();
+  } catch (err) {
+    console.error("Failed to add patient:", err);
+    alert("Failed to add patient.");
+  }
+};
 
   return (
     <div className="main-container">
