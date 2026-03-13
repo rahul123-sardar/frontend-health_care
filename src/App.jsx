@@ -1,6 +1,7 @@
 // App.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
+import AddPatient from "./AddPatient";
 import "./App.css";
 
 function App() {
@@ -97,26 +98,7 @@ function App() {
   return (
     <div className="main-container">
       {/* Add Patient Form */}
-      <div className="card">
-        <h2 className="title">Add Patient</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          {["patientId", "name", "vitals", "billingCode", "diagnosis", "notes"].map((field) => (
-            <input
-              key={field}
-              type="text"
-              name={field}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              value={formData[field]}
-              onChange={handleChange}
-              required={field === "patientId" || field === "name"}
-            />
-          ))}
-          <input type="file" name="image" onChange={handleChange} />
-          <button type="submit" className="btn btn-nurse">
-            Add Patient
-          </button>
-        </form>
-      </div>
+      <AddPatient onPatientAdded={fetchPatients} />
 
       {/* Role Buttons */}
       <div className="card">
