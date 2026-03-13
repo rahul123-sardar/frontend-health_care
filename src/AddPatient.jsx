@@ -1,89 +1,103 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
 
 const AddPatient = () => {
-  const [preview, setPreview] = useState(null);
-  const [progress, setProgress] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-
-  const formik = useFormik({
-    initialValues: {
-      patientId: "",
-      name: "",
-      vitals: "",
-      billingCode: "",
-      diagnosis: "",
-      notes: "",
-    },
-    validationSchema: Yup.object({
-      patientId: Yup.number().required("Required"),
-      name: Yup.string().required("Required"),
-    }),
-    onSubmit: async (values, { resetForm }) => {
-      if (!imageUrl) {
-        alert("Please upload an image first!");
-        return;
-      }
-      const payload = { ...values, image: imageUrl };
-      console.log("Submitting payload:", payload);
-
-      // Here you can send payload to your backend
-      try {
-        setLoading(true);
-        const res = await axios.post(
-          "https://backend-health-care-xr5d.vercel.app/api/patient/save",
-          payload
-        );
-        alert(res.data.message || "Patient saved successfully!");
-        resetForm();
-        setPreview(null);
-        setImageUrl("");
-      } catch (err) {
-        console.error(err);
-        alert(err.response?.data?.message || "Server error");
-      } finally {
-        setLoading(false);
-      }
-    },
+  const [patient, setPatient] = useState({
+    patientId: "",
+    name: "",
+    vitals: "",
+    billingCode: "",
+    diagnosis: "",
+    notes: "",
   });
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
+  // Handle input change
+  const handleChange = (e) => {
+    setPatient({ ...patient, [e.target.name]: e.target.value });
+  };
+
+  // Handle file select and preview
   const handleFileChange = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  // Preview
-  const reader = new FileReader();
-  reader.onload = () => setPreview(reader.result);
-  reader.readAsDataURL(file);
+    // Preview
+    const reader = new FileReader();
+    reader.onload = () => setPreview(reader.result);
+    reader.readAsDataURL(file);
 
-  // Upload to Cloudinary
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "patient_unsigned"); // unsigned preset name
+    // Upload to Cloudinary
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "patient_unsigned"); // replace with your unsigned preset
 
-  try {
-    setLoading(true);
-    setProgress(0);
-    const res = await axios.post(
-      "https://api.cloudinary.com/v1_1/dchn8rrno/image/upload", // YOUR CLOUD NAME
-      formData,
-      {
-        onUploadProgress: (e) => {
-          setProgress(Math.round((e.loaded * 100) / e.total));
-        },
-      }
-    );
-    setImageUrl(res.data.secure_url);
-  } catch (err) {
-    console.error("Cloudinary upload error:", err);
-    alert("Image upload failed");
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+      setProgress(0);
+
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dchn8rrno/image/upload", // your cloud name
+        formData,
+        {
+          onUploadProgress: (e) =>
+            setProgress(Math.round((e.loaded * 100) / e.total)),
+        }
+      );
+      setImageUrl(res.data.secure_url);
+      alert("Image uploaded successfully!");
+    } catch (err) {
+      console.error("Cloudinary error:", err);
+      alert("Image upload failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!patient.patientId || !patient.name) {
+      alert("Patient ID and Name are required!");
+      return;
+    }
+    if (!imageUrl) {
+      alert("Please upload an image first!");
+      return;
+    }
+
+    const payload = { ...patient, image: imageUrl };
+
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        "https://backend-health-care-xr5d.vercel.app/api/patient/save",
+        payload
+      );
+      alert(res.data.message || "Patient saved successfully!");
+      setPatient({
+        patientId: "",
+        name: "",
+        vitals: "",
+        billingCode: "",
+        diagnosis: "",
+        notes: "",
+      });
+      setImage(null);
+      setPreview(null);
+      setImageUrl("");
+      setProgress(0);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Server error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
@@ -92,34 +106,87 @@ const AddPatient = () => {
           Add Patient
         </h1>
 
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block font-medium text-gray-700 mb-1">Patient ID</label>
+              <label className="block font-medium text-gray-700 mb-1">
+                Patient ID
+              </label>
               <input
                 type="number"
                 name="patientId"
-                onChange={formik.handleChange}
-                value={formik.values.patientId}
+                value={patient.patientId}
+                onChange={handleChange}
                 className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                required
               />
-              {formik.touched.patientId && formik.errors.patientId ? (
-                <div className="text-red-500 text-sm mt-1">{formik.errors.patientId}</div>
-              ) : null}
             </div>
+
             <div>
-              <label className="block font-medium text-gray-700 mb-1">Name</label>
+              <label className="block font-medium text-gray-700 mb-1">
+                Name
+              </label>
               <input
                 type="text"
                 name="name"
-                onChange={formik.handleChange}
-                value={formik.values.name}
+                value={patient.name}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">
+                Vitals
+              </label>
+              <input
+                type="text"
+                name="vitals"
+                value={patient.vitals}
+                onChange={handleChange}
+                placeholder="120/80, 98.6F"
                 className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
               />
-              {formik.touched.name && formik.errors.name ? (
-                <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
-              ) : null}
             </div>
+
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">
+                Billing Code
+              </label>
+              <input
+                type="number"
+                name="billingCode"
+                value={patient.billingCode}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">
+              Diagnosis
+            </label>
+            <input
+              type="text"
+              name="diagnosis"
+              value={patient.diagnosis}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">
+              Doctor Notes
+            </label>
+            <textarea
+              name="notes"
+              value={patient.notes}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+            />
           </div>
 
           {/* File Upload */}
@@ -132,7 +199,11 @@ const AddPatient = () => {
             />
             {preview && (
               <div className="w-24 h-32 border rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-                <img src={preview} alt="preview" className="object-cover w-full h-full" />
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="object-cover w-full h-full"
+                />
               </div>
             )}
             {loading && (
