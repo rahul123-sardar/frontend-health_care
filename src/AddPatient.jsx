@@ -20,7 +20,6 @@ function AddPatient() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Compress image before upload
   const compressImage = (file, maxWidth = 800, maxHeight = 800) => {
     return new Promise((resolve) => {
       const img = new Image();
@@ -29,23 +28,15 @@ function AddPatient() {
         const canvas = document.createElement("canvas");
         let width = img.width;
         let height = img.height;
-
         if (width > maxWidth || height > maxHeight) {
           const scale = Math.min(maxWidth / width, maxHeight / height);
           width *= scale;
           height *= scale;
         }
-
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, width, height);
-
-        canvas.toBlob(
-          (blob) => resolve(blob),
-          file.type,
-          0.7
-        );
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => resolve(blob), file.type, 0.7);
       };
     });
   };
@@ -107,84 +98,100 @@ function AddPatient() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-200 p-4">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Add Patient Record</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <div className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl p-8">
+        <h1 className="text-4xl font-bold text-center text-indigo-700 mb-8">
+          Add Patient
+        </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Patient Info Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Patient ID</label>
+              <input
+                type="number"
+                name="patientId"
+                value={formData.patientId}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Vitals</label>
+              <input
+                type="text"
+                name="vitals"
+                value={formData.vitals}
+                onChange={handleChange}
+                placeholder="120/80, 98.6F"
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Billing Code</label>
+              <input
+                type="number"
+                name="billingCode"
+                value={formData.billingCode}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
+          </div>
 
-          <input
-            type="number"
-            name="patientId"
-            value={formData.patientId}
-            onChange={handleChange}
-            placeholder="Patient ID"
-            required
-            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+          {/* Diagnosis & Notes */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">Diagnosis</label>
+            <input
+              type="text"
+              name="diagnosis"
+              value={formData.diagnosis}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">Doctor Notes</label>
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
 
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Patient Name"
-            required
-            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-
-          <input
-            type="text"
-            name="vitals"
-            value={formData.vitals}
-            onChange={handleChange}
-            placeholder="Vitals (e.g., 120/80, 98.6F)"
-            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-
-          <input
-            type="number"
-            name="billingCode"
-            value={formData.billingCode}
-            onChange={handleChange}
-            placeholder="Billing Code"
-            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-
-          <input
-            type="text"
-            name="diagnosis"
-            value={formData.diagnosis}
-            onChange={handleChange}
-            placeholder="Diagnosis"
-            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            placeholder="Doctor Notes"
-            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-
+          {/* Image Upload */}
           <div className="flex flex-col items-center">
             <input
               type="file"
               ref={fileInputRef}
-              accept="image/png, image/jpeg, image/jpg"
+              accept="image/png, image/jpeg"
               onChange={handleFileChange}
-              className="w-full border border-gray-300 rounded-xl p-2 mb-2"
+              className="w-full border p-2 rounded-xl mb-2"
             />
             {preview && (
               <img
                 src={preview}
                 alt="Preview"
-                className="w-32 h-32 object-cover rounded-xl border shadow-md"
+                className="w-40 h-40 object-cover rounded-xl border shadow-md"
               />
             )}
           </div>
 
+          {/* Upload Progress */}
           {loading && (
             <div className="w-full bg-gray-200 h-3 rounded mt-2">
               <div
@@ -198,7 +205,9 @@ function AddPatient() {
             type="submit"
             disabled={loading}
             className={`w-full py-3 rounded-2xl font-semibold text-white transition-all duration-200 ${
-              loading ? "bg-gray-400" : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+              loading
+                ? "bg-gray-400"
+                : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
             }`}
           >
             {loading ? `Saving... ${progress}%` : "Save Patient"}
