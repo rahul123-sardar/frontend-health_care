@@ -11,7 +11,7 @@ function AddPatient() {
     notes: ""
   });
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null); // for image preview
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef(null);
@@ -44,7 +44,7 @@ function AddPatient() {
         canvas.toBlob(
           (blob) => resolve(blob),
           file.type,
-          0.7 // compress to 70%
+          0.7
         );
       };
     });
@@ -53,11 +53,9 @@ function AddPatient() {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const compressed = await compressImage(file);
     setImage(compressed);
 
-    // Show preview
     const reader = new FileReader();
     reader.onload = () => setPreview(reader.result);
     reader.readAsDataURL(file);
@@ -88,7 +86,6 @@ function AddPatient() {
 
       alert(res.data.message || "Patient saved successfully!");
 
-      // Reset form
       setFormData({
         patientId: "",
         name: "",
@@ -110,10 +107,12 @@ function AddPatient() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-purple-100 p-4">
-      <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Add Patient Record</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-200 p-4">
+      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-lg">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Add Patient Record</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+
           <input
             type="number"
             name="patientId"
@@ -121,8 +120,9 @@ function AddPatient() {
             onChange={handleChange}
             placeholder="Patient ID"
             required
-            className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br />
+            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
           <input
             type="text"
             name="name"
@@ -130,39 +130,43 @@ function AddPatient() {
             onChange={handleChange}
             placeholder="Patient Name"
             required
-            className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br />
+            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
           <input
             type="text"
             name="vitals"
             value={formData.vitals}
             onChange={handleChange}
             placeholder="Vitals (e.g., 120/80, 98.6F)"
-            className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br />
+            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
           <input
             type="number"
             name="billingCode"
             value={formData.billingCode}
             onChange={handleChange}
             placeholder="Billing Code"
-            className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br />
+            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
           <input
             type="text"
             name="diagnosis"
             value={formData.diagnosis}
             onChange={handleChange}
             placeholder="Diagnosis"
-            className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br />
+            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
           <textarea
             name="notes"
             value={formData.notes}
             onChange={handleChange}
             placeholder="Doctor Notes"
-            className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-          /><br />
+            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
 
           <div className="flex flex-col items-center">
             <input
@@ -170,21 +174,21 @@ function AddPatient() {
               ref={fileInputRef}
               accept="image/png, image/jpeg, image/jpg"
               onChange={handleFileChange}
-              className="w-full border border-gray-300 p-2 rounded-xl mb-2"
+              className="w-full border border-gray-300 rounded-xl p-2 mb-2"
             />
             {preview && (
               <img
                 src={preview}
                 alt="Preview"
-                className="w-32 h-32 object-cover rounded-lg border mt-2 shadow-md"
+                className="w-32 h-32 object-cover rounded-xl border shadow-md"
               />
             )}
-          </div><br />
+          </div>
 
           {loading && (
             <div className="w-full bg-gray-200 h-3 rounded mt-2">
               <div
-                className="bg-blue-600 h-3 rounded transition-all duration-300"
+                className="bg-indigo-500 h-3 rounded transition-all duration-300"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
@@ -193,9 +197,9 @@ function AddPatient() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-2xl text-white font-semibold ${
-              loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-            } transition-colors duration-200`}
+            className={`w-full py-3 rounded-2xl font-semibold text-white transition-all duration-200 ${
+              loading ? "bg-gray-400" : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+            }`}
           >
             {loading ? `Saving... ${progress}%` : "Save Patient"}
           </button>
