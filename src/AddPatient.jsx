@@ -170,7 +170,7 @@ function AddPatient() {
                 <img
                   src={preview}
                   alt="Preview"
-                  className="object-cover w-5 h-5"
+                  className="object-cover w-7 h-7"
                 />
               </div>
             )}
