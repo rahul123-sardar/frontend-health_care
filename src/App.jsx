@@ -38,23 +38,20 @@ function App() {
   const roleConfig = {
     Nurse: {
       title: "Nurse View",
-      bg: "bg-green-50",
-      border: "border-green-400",
+      className: "nurse-view",
       fields: ["patientId", "name", "vitals", "diagnosis", "notes"],
       showImage: true,
     },
     Billing: {
       title: "Billing Clerk View",
-      bg: "bg-yellow-50",
-      border: "border-yellow-400",
+      className: "billing-view",
       fields: ["patientId", "name", "billingCode"],
       showImage: true,
       accessDenied: "Diagnosis & Notes are encrypted (Access denied)",
     },
     Unauthorized: {
       title: "ACCESS DENIED",
-      bg: "bg-red-100",
-      border: "border-red-400",
+      className: "denied",
     },
   };
 
@@ -93,11 +90,11 @@ function App() {
   };
 
   return (
-    <div className="bg-gray-100 p-8 min-h-screen">
+    <div className="main-container">
       {/* Add Patient Form */}
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg mb-6">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Add Patient</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="card">
+        <h2 className="title">Add Patient</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           {["patientId", "name", "vitals", "billingCode", "diagnosis", "notes"].map((field) => (
             <input
               key={field}
@@ -107,40 +104,25 @@ function App() {
               value={formData[field]}
               onChange={handleChange}
               required={field === "patientId" || field === "name"}
-              className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           ))}
-          <input
-            type="file"
-            name="image"
-            onChange={handleChange}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 transition-colors text-white px-4 py-2 rounded font-semibold"
-          >
+          <input type="file" name="image" onChange={handleChange} />
+          <button type="submit" className="btn btn-nurse">
             Add Patient
           </button>
         </form>
       </div>
 
       {/* Role Buttons */}
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg mb-6">
-        <h1 className="text-3xl font-bold text-blue-800 mb-4 text-center">
-          Secure PHI Access Simulator
-        </h1>
-        <div className="flex gap-4 justify-center mb-6">
+      <div className="card">
+        <h1 className="title">Secure PHI Access Simulator</h1>
+        <div className="button-group">
           {["Nurse", "Billing", "Unauthorized"].map((r) => (
             <button
               key={r}
               onClick={() => setRole(r)}
-              className={`px-6 py-2 rounded-lg font-semibold shadow-md transition-transform transform hover:scale-105 ${
-                r === "Nurse"
-                  ? "bg-green-600 text-white hover:bg-green-700"
-                  : r === "Billing"
-                  ? "bg-yellow-500 text-white hover:bg-yellow-600"
-                  : "bg-red-500 text-white hover:bg-red-600"
+              className={`btn ${
+                r === "Nurse" ? "btn-nurse" : r === "Billing" ? "btn-billing" : "btn-unauthorized"
               }`}
             >
               {r}
@@ -149,42 +131,31 @@ function App() {
         </div>
 
         {/* Patient List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {role && role !== "Unauthorized" &&
-            patients.map((patient) => {
-              const config = roleConfig[role];
-              return (
-                <div
-                  key={patient._id}
-                  className={`${config.bg} p-6 rounded-lg border ${config.border} shadow-md flex flex-col items-start gap-2`}
-                >
-                  <h2 className="font-bold text-lg">{config.title}</h2>
-                  {config.showImage && patient.image && (
-                    <img
-                      src={patient.image}
-                      width="120"
-                      alt="patient"
-                      className="rounded-md border border-gray-200 mt-2"
-                    />
-                  )}
-                  {config.fields.map((field) => (
-                    <p key={field} className="text-gray-700">
-                      <span className="font-semibold">{field.charAt(0).toUpperCase() + field.slice(1)}:</span>{" "}
-                      {patient[field]}
-                    </p>
-                  ))}
-                  {config.accessDenied && <p className="text-red-600 font-semibold mt-2">{config.accessDenied}</p>}
-                </div>
-              );
-            })}
+        {role && role !== "Unauthorized" &&
+          patients.map((patient) => {
+            const config = roleConfig[role];
+            return (
+              <div key={patient._id} className={`patient-box ${config.className}`}>
+                <h2 className="font-bold">{config.title}</h2>
+                {config.showImage && patient.image && (
+                  <img src={patient.image} width="120" alt="patient" />
+                )}
+                {config.fields.map((field) => (
+                  <p key={field}>
+                    <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> {patient[field]}
+                  </p>
+                ))}
+                {config.accessDenied && <p className="red-text">{config.accessDenied}</p>}
+              </div>
+            );
+          })}
 
-          {/* Unauthorized View */}
-          {role === "Unauthorized" && (
-            <div className={`${roleConfig.Unauthorized.bg} p-6 border ${roleConfig.Unauthorized.border} rounded-lg shadow-md text-center`}>
-              <h2 className="font-bold text-red-700 text-xl">{roleConfig.Unauthorized.title}</h2>
-            </div>
-          )}
-        </div>
+        {/* Unauthorized View */}
+        {role === "Unauthorized" && (
+          <div className={`patient-box ${roleConfig.Unauthorized.className}`}>
+            <h2>{roleConfig.Unauthorized.title}</h2>
+          </div>
+        )}
       </div>
     </div>
   );
