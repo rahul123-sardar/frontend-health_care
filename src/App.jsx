@@ -7,14 +7,14 @@ function App() {
   const [data, setData] = useState([]);
   const [role, setRole] = useState("");
 
-  // Use environment variable for backend base URL
-  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "https://backend-health-care-97bf.vercel.app/api/patient";
+  // Base backend URL (from environment variable or default to deployed API)
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "https://backend-health-care-97bf.vercel.app/api";
 
   const getPatient = async (roleName) => {
     setRole(roleName);
 
     try {
-      // Correct endpoint: match backend routes
+      // Correct endpoint: match backend route /api/patient
       const res = await axios.get(`${API_BASE_URL}/patient`);
       setData(res.data);
     } catch (err) {
