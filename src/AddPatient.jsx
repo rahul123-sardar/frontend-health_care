@@ -186,7 +186,7 @@ function AddPatient() {
               <img
                 src={preview}
                 alt="Preview"
-                className="w-40 h-40 object-cover rounded-xl border shadow-md"
+                className="w-10 h-10 object-cover rounded-xl border shadow-md"
               />
             )}
           </div>
