@@ -19,24 +19,22 @@ const AddPatient = () => {
       patientId: Yup.number().required("Required"),
       name: Yup.string().required("Required"),
     }),
-    onSubmit: async (values) => {
-      const formData = new FormData();
-      formData.append("patientId", values.patientId);
-      formData.append("name", values.name);
-      formData.append("vitals", values.vitals);
-      formData.append("billingCode", values.billingCode);
-      formData.append("diagnosis", values.diagnosis);
-      formData.append("notes", values.notes);
-      if (file) formData.append("image", file);
-
+    onSubmit: async (values, { resetForm }) => {  // <-- resetForm comes from Formik
       try {
+        const formData = new FormData();
+        Object.entries(values).forEach(([key, value]) =>
+          formData.append(key, value)
+        );
+        if (file) formData.append("image", file);
+
         const res = await axios.post(
           "https://backend-health-care-xr5d.vercel.app/api/patient/save",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
-        alert(res.data.message);
-        formik.resetForm();
+
+        alert(res.data.message || "Patient saved successfully!");
+        resetForm(); // <-- now resetForm is defined
         setFile(null);
       } catch (err) {
         console.error(err);
