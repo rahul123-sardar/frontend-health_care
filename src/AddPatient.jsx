@@ -1,17 +1,8 @@
 import React, { useState, useRef } from "react";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
-
-const validate = (values) => {
-  const errors = {};
-  if (!values.patientId) {
-    errors.patientId = "Required";
-  }
-  if (!values.name) {
-    errors.name = "Required";
-  }
-  return errors;
-};
+import imageCompression from "browser-image-compression";
 
 const AddPatient = () => {
   const [image, setImage] = useState(null);
@@ -20,37 +11,7 @@ const AddPatient = () => {
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef(null);
 
-  const compressImage = (file, maxWidth = 800, maxHeight = 800) =>
-    new Promise((resolve) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        let width = img.width;
-        let height = img.height;
-        if (width > maxWidth || height > maxHeight) {
-          const scale = Math.min(maxWidth / width, maxHeight / height);
-          width *= scale;
-          height *= scale;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-        canvas.toBlob((blob) => resolve(blob), file.type, 0.7);
-      };
-    });
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const compressed = await compressImage(file);
-    setImage(compressed);
-
-    const reader = new FileReader();
-    reader.onload = () => setPreview(reader.result);
-    reader.readAsDataURL(file);
-  };
-
+  // Formik + Yup validation
   const formik = useFormik({
     initialValues: {
       patientId: "",
@@ -60,7 +21,14 @@ const AddPatient = () => {
       diagnosis: "",
       notes: "",
     },
-    validate,
+    validationSchema: Yup.object({
+      patientId: Yup.number().required("Patient ID is required"),
+      name: Yup.string().required("Patient name is required"),
+      vitals: Yup.string(),
+      billingCode: Yup.number(),
+      diagnosis: Yup.string(),
+      notes: Yup.string(),
+    }),
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
       setProgress(0);
@@ -70,13 +38,17 @@ const AddPatient = () => {
       if (image) data.append("image", image);
 
       try {
+        let lastPercent = 0;
         const res = await axios.post(
           "https://backend-health-care-xr5d.vercel.app/api/patient/save",
           data,
           {
             onUploadProgress: (event) => {
               const percent = Math.round((event.loaded * 100) / event.total);
-              setProgress(percent);
+              if (percent - lastPercent >= 5) {
+                setProgress(percent);
+                lastPercent = percent;
+              }
             },
           }
         );
@@ -96,12 +68,32 @@ const AddPatient = () => {
     },
   });
 
+  // Compress and preview image
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Compress with browser-image-compression
+    const compressed = await imageCompression(file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 800,
+      useWebWorker: true,
+    });
+    setImage(compressed);
+
+    // Generate small passport-size preview
+    const reader = new FileReader();
+    reader.onload = () => setPreview(reader.result);
+    reader.readAsDataURL(compressed);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <div className="w-full max-w-2xl bg-white shadow-2xl rounded-3xl p-8">
         <h1 className="text-4xl font-bold text-center text-indigo-700 mb-8">
           Add Patient
         </h1>
+
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Patient ID */}
@@ -111,13 +103,15 @@ const AddPatient = () => {
                 type="number"
                 name="patientId"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.patientId}
                 className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
               />
-              {formik.errors.patientId ? (
+              {formik.touched.patientId && formik.errors.patientId ? (
                 <div className="text-red-500 text-sm mt-1">{formik.errors.patientId}</div>
               ) : null}
             </div>
+
             {/* Name */}
             <div>
               <label className="block font-medium text-gray-700 mb-1">Name</label>
@@ -125,13 +119,15 @@ const AddPatient = () => {
                 type="text"
                 name="name"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.name}
                 className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
               />
-              {formik.errors.name ? (
+              {formik.touched.name && formik.errors.name ? (
                 <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
               ) : null}
             </div>
+
             {/* Vitals */}
             <div>
               <label className="block font-medium text-gray-700 mb-1">Vitals</label>
@@ -144,6 +140,7 @@ const AddPatient = () => {
                 className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
               />
             </div>
+
             {/* Billing Code */}
             <div>
               <label className="block font-medium text-gray-700 mb-1">Billing Code</label>
@@ -196,7 +193,7 @@ const AddPatient = () => {
             )}
           </div>
 
-          {/* Progress */}
+          {/* Upload Progress */}
           {loading && (
             <div className="w-full bg-gray-200 h-3 rounded mt-2">
               <div
