@@ -9,7 +9,7 @@ function App() {
 
   const API_BASE_URL =
     import.meta.env.VITE_BACKEND_URL ||
-    "https://backend-health-care-xr5d.vercel.app/api";
+    "https://backend-health-care-97bf.vercel.app/api/patient";
 
   const getPatient = async (roleName) => {
     setRole(roleName);
