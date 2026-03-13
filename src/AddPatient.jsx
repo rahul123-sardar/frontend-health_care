@@ -1,54 +1,51 @@
 import { useState, useRef } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
 
 function AddPatient() {
-  const [formData, setFormData] = useState({
-    patientId: "",
-    name: "",
-    vitals: "",
-    billingCode: "",
-    diagnosis: "",
-    notes: ""
-  });
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef(null);
 
-  // Handle input change
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Validation schema
+  const validationSchema = Yup.object({
+    patientId: Yup.number().required("Patient ID is required"),
+    name: Yup.string().required("Name is required"),
+    vitals: Yup.string(),
+    billingCode: Yup.number(),
+    diagnosis: Yup.string(),
+    notes: Yup.string(),
+  });
 
   // Compress image
-  const compressImage = (file, maxWidth = 800, maxHeight = 800) => {
-    return new Promise((resolve) => {
+  const compressImage = (file, maxWidth = 800, maxHeight = 800) =>
+    new Promise((resolve) => {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         const canvas = document.createElement("canvas");
         let width = img.width;
         let height = img.height;
-
         if (width > maxWidth || height > maxHeight) {
           const scale = Math.min(maxWidth / width, maxHeight / height);
           width *= scale;
           height *= scale;
         }
-
         canvas.width = width;
         canvas.height = height;
         canvas.getContext("2d").drawImage(img, 0, 0, width, height);
         canvas.toBlob((blob) => resolve(blob), file.type, 0.7);
       };
     });
-  };
 
-  // Handle file upload
+  // Handle image upload
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const compressed = await compressImage(file);
     setImage(compressed);
 
@@ -57,16 +54,13 @@ function AddPatient() {
     reader.readAsDataURL(file);
   };
 
-  // Handle submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (loading) return;
-
+  // Handle form submission
+  const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
     setProgress(0);
 
     const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => data.append(key, value));
+    Object.entries(values).forEach(([key, value]) => data.append(key, value));
     if (image) data.append("image", image);
 
     try {
@@ -82,15 +76,7 @@ function AddPatient() {
       );
 
       alert(res.data.message || "Patient saved successfully!");
-
-      setFormData({
-        patientId: "",
-        name: "",
-        vitals: "",
-        billingCode: "",
-        diagnosis: "",
-        notes: "",
-      });
+      resetForm();
       setImage(null);
       setPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = null;
@@ -110,95 +96,119 @@ function AddPatient() {
           Add Patient
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Patient Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { label: "Patient ID", name: "patientId", type: "number" },
-              { label: "Name", name: "name", type: "text" },
-              { label: "Vitals", name: "vitals", type: "text", placeholder: "120/80, 98.6F" },
-              { label: "Billing Code", name: "billingCode", type: "number" },
-            ].map((field) => (
-              <div key={field.name}>
-                <label className="block font-medium text-gray-700 mb-1">{field.label}</label>
-                <input
-                  type={field.type}
-                  name={field.name}
-                  value={formData[field.name]}
-                  onChange={handleChange}
-                  placeholder={field.placeholder || ""}
-                  required={field.name === "patientId" || field.name === "name"}
+        <Formik
+          initialValues={{
+            patientId: "",
+            name: "",
+            vitals: "",
+            billingCode: "",
+            diagnosis: "",
+            notes: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="space-y-6">
+              {/* Patient Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  { label: "Patient ID", name: "patientId", type: "number" },
+                  { label: "Name", name: "name", type: "text" },
+                  { label: "Vitals", name: "vitals", type: "text", placeholder: "120/80, 98.6F" },
+                  { label: "Billing Code", name: "billingCode", type: "number" },
+                ].map((field) => (
+                  <div key={field.name}>
+                    <label className="block font-medium text-gray-700 mb-1">{field.label}</label>
+                    <Field
+                      type={field.type}
+                      name={field.name}
+                      placeholder={field.placeholder || ""}
+                      className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                    />
+                    <ErrorMessage
+                      name={field.name}
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Diagnosis & Notes */}
+              <div>
+                <label className="block font-medium text-gray-700 mb-1">Diagnosis</label>
+                <Field
+                  type="text"
+                  name="diagnosis"
                   className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
                 />
-              </div>
-            ))}
-          </div>
-
-          {/* Diagnosis & Notes */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-1">Diagnosis</label>
-            <input
-              type="text"
-              name="diagnosis"
-              value={formData.diagnosis}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-
-          <div>
-            <label className="block font-medium text-gray-700 mb-1">Doctor Notes</label>
-            <textarea
-              name="notes"
-              value={formData.notes}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div className="flex flex-col items-center">
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/png, image/jpeg"
-              onChange={handleFileChange}
-              className="w-full border p-2 rounded-xl mb-2"
-            />
-            {preview && (
-              <div className="border rounded-xl shadow-md w-24 h-32 flex items-center justify-center overflow-hidden bg-gray-100">
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="object-cover w-7 h-7"
+                <ErrorMessage
+                  name="diagnosis"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
                 />
               </div>
-            )}
-           
-          </div>
 
-          {/* Upload Progress */}
-          {loading && (
-            <div className="w-full bg-gray-200 h-3 rounded mt-2">
-              <div
-                className="bg-indigo-500 h-3 rounded transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+              <div>
+                <label className="block font-medium text-gray-700 mb-1">Doctor Notes</label>
+                <Field
+                  as="textarea"
+                  name="notes"
+                  className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                />
+                <ErrorMessage
+                  name="notes"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              {/* Image Upload */}
+              <div className="flex flex-col items-center">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/png, image/jpeg"
+                  onChange={handleFileChange}
+                  className="w-full border p-2 rounded-xl mb-2"
+                />
+                {preview && (
+                  <div className="border rounded-xl shadow-md w-24 h-32 flex items-center justify-center overflow-hidden bg-gray-100">
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                )}
+                {preview && <p className="text-gray-500 text-sm mt-1">Passport-size preview</p>}
+              </div>
+
+              {/* Upload Progress */}
+              {loading && (
+                <div className="w-full bg-gray-200 h-3 rounded mt-2">
+                  <div
+                    className="bg-indigo-500 h-3 rounded transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading || isSubmitting}
+                className={`w-full py-3 rounded-2xl font-semibold text-white transition-all duration-200 ${
+                  loading || isSubmitting
+                    ? "bg-gray-400"
+                    : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+                }`}
+              >
+                {loading || isSubmitting ? `Saving... ${progress}%` : "Save Patient"}
+              </button>
+            </Form>
           )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 rounded-2xl font-semibold text-white transition-all duration-200 ${
-              loading
-                ? "bg-gray-400"
-                : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
-            }`}
-          >
-            {loading ? `Saving... ${progress}%` : "Save Patient"}
-          </button>
-        </form>
+        </Formik>
       </div>
     </div>
   );
