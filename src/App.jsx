@@ -46,14 +46,14 @@ function App() {
           </button>
 
         </div>
-<h2 className="font-bold">Nurse View</h2>
+
        {role === "Nurse" && data && data.map((patient) => (
 
   <div
   key={patient._id}
   className="bg-green-50 p-4 border border-green-400 mb-3 patient-box nurse-view">
 
-    
+    <h2 className="font-bold">Nurse View</h2>
    {patient.image && (
   <img src={patient.image} width="120" />
 )}
