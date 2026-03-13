@@ -10,7 +10,7 @@ function App() {
   const getPatient = async(roleName)=>{
     setRole(roleName);
 
-    const res = await axios.get("http://localhost:5000/api/patient");
+    const res = await axios.get("https://backend-health-care-xr5d.vercel.app/api/patient");
     setData(res.data);
   };
 

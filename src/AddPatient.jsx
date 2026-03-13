@@ -69,7 +69,7 @@ if (image) {
   try {
 
     const res = await axios.post(
-  "http://localhost:5000/api/patient/save",
+  "https://backend-health-care-xr5d.vercel.app/api/patient/save",
   data,
   {
     headers: {
