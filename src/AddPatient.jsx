@@ -42,7 +42,6 @@ const AddPatient = () => {
         alert(res.data.message || "Patient saved successfully!");
         resetForm(); // <-- Works because it's inside useFormik
         setFile(null);
-        console.log(formData);
       } catch (err) {
         console.error("Upload failed:", err);
         alert(err.response?.data?.message || "Upload failed");
