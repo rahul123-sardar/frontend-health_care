@@ -6,6 +6,7 @@ import axios from "axios";
 const AddPatient = () => {
   const [file, setFile] = useState(null);
 
+  // Define useFormik inside the component
   const formik = useFormik({
     initialValues: {
       patientId: "",
@@ -21,10 +22,9 @@ const AddPatient = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        // Create FormData object to handle file + other fields
         const formData = new FormData();
 
-        // Append all form values
+        // Append form values
         Object.entries(values).forEach(([key, value]) => {
           if (value !== "") formData.append(key, value);
         });
@@ -36,15 +36,13 @@ const AddPatient = () => {
         const res = await axios.post(
           "https://backend-health-care-xr5d.vercel.app/api/patient/save",
           formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
 
-        // Success
         alert(res.data.message || "Patient saved successfully!");
-        resetForm(); // reset all Formik fields
-        setFile(null); // clear file state
+        resetForm(); // <-- Works because it's inside useFormik
+        setFile(null);
+        console.log(formData);
       } catch (err) {
         console.error("Upload failed:", err);
         alert(err.response?.data?.message || "Upload failed");
