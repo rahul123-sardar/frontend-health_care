@@ -173,24 +173,26 @@ function AddPatient() {
             />
           </div>
 
-          {/* Image Upload */}
-          <div className="flex flex-col items-center">
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/png, image/jpeg"
-              onChange={handleFileChange}
-              className="w-full border p-2 rounded-xl mb-2"
-            />
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-10 h-10 object-cover rounded-xl border shadow-md"
-              />
-            )}
-          </div>
-
+         {/* Image Upload */}
+<div className="flex flex-col items-center">
+  <input
+    type="file"
+    ref={fileInputRef}
+    accept="image/png, image/jpeg"
+    onChange={handleFileChange}
+    className="w-full border p-2 rounded-xl mb-3"
+  />
+  {preview && (
+    <div className="border rounded-xl shadow-md w-28 h-36 flex items-center justify-center overflow-hidden bg-gray-100">
+      <img
+        src={preview}
+        alt="Preview"
+        className="object-cover w-full h-full"
+      />
+    </div>
+  )}
+  <p className="text-gray-500 text-sm mt-1">Passport-size preview</p>
+</div>
           {/* Upload Progress */}
           {loading && (
             <div className="w-full bg-gray-200 h-3 rounded mt-2">
