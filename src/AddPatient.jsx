@@ -19,6 +19,16 @@ function AddPatient() {
       ...formData,
       [e.target.name]: e.target.value
     });
+
+    setFormData({
+  patientId: "",
+  name: "",
+  vitals: "",
+  billingCode: "",
+  diagnosis: "",
+  notes: ""
+});
+setImage(null);
   };
 
   // const handleSubmit = async (e) => {
