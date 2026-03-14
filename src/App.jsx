@@ -16,11 +16,12 @@ function App() {
     image: null,
   });
 
+  // Direct backend URL (no proxy)
   const API_BASE_URL =
     import.meta.env.VITE_BACKEND_URL ||
     "https://backend-health-care-wrp.vercel.app/api/patient";
 
-  // Fetch all patients
+  // Fetch patients
   const fetchPatients = async () => {
     try {
       const res = await axios.get(API_BASE_URL);
@@ -55,6 +56,7 @@ function App() {
     },
   };
 
+  // Form input handler
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -63,6 +65,7 @@ function App() {
     });
   };
 
+  // Submit new patient
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -121,7 +124,7 @@ function App() {
         </form>
       </div>
 
-      {/* Role Buttons */}
+      {/* Role Selection */}
       <div className="card">
         <h1 className="title">Secure PHI Access Simulator</h1>
         <div className="button-group">
@@ -165,7 +168,7 @@ function App() {
             );
           })}
 
-        {/* Unauthorized View */}
+        {/* Unauthorized */}
         {role === "Unauthorized" && (
           <div className={`patient-box ${roleConfig.Unauthorized.className}`}>
             <h2>{roleConfig.Unauthorized.title}</h2>
