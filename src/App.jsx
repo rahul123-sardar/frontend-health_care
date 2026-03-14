@@ -7,10 +7,10 @@ function App() {
   const [patients, setPatients] = useState([]);
   const [role, setRole] = useState(""); // Nurse, Billing, Unauthorized
 
-  // Replace this with your deployed backend URL
+  // Backend URL
   const API_URL = "https://backend-health-care-wrp.vercel.app/api/patient";
 
-  // Fetch patients from backend
+  // Fetch patients
   const fetchPatients = async () => {
     try {
       const res = await axios.get(API_URL);
@@ -33,41 +33,58 @@ function App() {
   };
 
   return (
-    <div className="main-container">
-      <h1>Secure PHI Access Simulator</h1>
+    <div className="app-container">
+      <header>
+        <h1>Secure PHI Access Simulator</h1>
+      </header>
 
       {/* Role Selection */}
-      <div className="role-buttons">
-        {Object.keys(roles).map((r) => (
-          <button key={r} onClick={() => setRole(r)}>
-            {r}
-          </button>
-        ))}
-      </div>
-
-      {/* Patients List */}
-      <div className="patients-list">
-        {role === "Unauthorized" && <p>Access Denied</p>}
-        {role && role !== "Unauthorized" &&
-          patients.map((p) => (
-            <div key={p._id || p.patientId} className="patient-card">
-              {roles[role].map((field) => (
-                <p key={field}>
-                  <strong>{field}: </strong>
-                  {p[field] ?? "-"}
-                </p>
-              ))}
-              {p.image && (
-                <img
-                  src={p.image}
-                  alt="patient"
-                  width="120"
-                  height="120"
-                />
-              )}
-            </div>
+      <section className="role-section">
+        <h2>Select Role</h2>
+        <div className="role-buttons">
+          {Object.keys(roles).map((r) => (
+            <button
+              key={r}
+              className={`role-btn ${r.toLowerCase()}`}
+              onClick={() => setRole(r)}
+            >
+              {r}
+            </button>
           ))}
-      </div>
+        </div>
+      </section>
+
+      {/* Patient List */}
+      <section className="patients-section">
+        <h2>Patients</h2>
+        {role === "" && <p>Please select a role to view patients.</p>}
+        {role === "Unauthorized" && <p className="access-denied">Access Denied</p>}
+        {role && role !== "Unauthorized" && patients.length === 0 && <p>No patients found.</p>}
+
+        <div className="patients-grid">
+          {role &&
+            role !== "Unauthorized" &&
+            patients.map((p) => (
+              <div key={p._id || p.patientId} className="patient-card">
+                <div className="patient-image">
+                  <img
+                    src={p.image || "https://via.placeholder.com/120"}
+                    alt={p.name || "patient"}
+                  />
+                </div>
+                <div className="patient-details">
+                  {roles[role].map((field) => (
+                    <p key={field}>
+                      <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong>{" "}
+                      {p[field] ?? "-"}
+                    </p>
+                  ))}
+                  {role === "Billing" && <p className="access-denied">Diagnosis & Notes are encrypted</p>}
+                </div>
+              </div>
+            ))}
+        </div>
+      </section>
     </div>
   );
 }
