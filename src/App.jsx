@@ -22,14 +22,14 @@ function App() {
 
   // Fetch patients from serverless backend
   const fetchPatients = async () => {
-    try {
-      const res = await axios.get(API_BASE_URL);
-      setPatients(res.data);
-    } catch (err) {
-      console.error("Failed to fetch patients:", err);
-      setPatients([]);
-    }
-  };
+  try {
+    const res = await axios.get(API_BASE_URL);
+    setPatients(res.data);
+  } catch (err) {
+    console.error("Failed to fetch patients:", err);
+    setPatients([]);
+  }
+};
 
   useEffect(() => {
     fetchPatients();
@@ -74,9 +74,9 @@ function App() {
       });
 
       // POST to serverless endpoint (no /save)
-      await axios.post(API_BASE_URL, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.post("/api/patient", data, {
+  headers: { "Content-Type": "multipart/form-data" },
+});
 
       alert("Patient added successfully!");
       setFormData({
