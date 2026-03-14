@@ -33,8 +33,19 @@ function App() {
   };
 
   useEffect(() => {
-    fetchPatients();
-  }, []);
+  const fetchPatients = async () => {
+    try {
+      const res = await axios.get(API_BASE_URL);
+      console.log("Fetched patients:", res.data); // ✅ Debug
+      setPatients(res.data);
+    } catch (err) {
+      console.error("Failed to fetch patients:", err);
+      setPatients([]);
+    }
+  };
+
+  fetchPatients();
+}, []);
 
   const roleConfig = {
     Nurse: {
