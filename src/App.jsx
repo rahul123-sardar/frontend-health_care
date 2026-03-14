@@ -132,7 +132,7 @@ function App() {
                     <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> {patient[field]}
                   </p>
                 ))}
-                {config.accessDenied && <p className="red-text">{config.accessDenied}</p>}
+                
               </div>
             );
           })}
