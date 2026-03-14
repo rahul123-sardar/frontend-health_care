@@ -25,7 +25,7 @@ const AddPatient = () => {
         if (values.image) formData.append("image", values.image);
 
         const res = await axios.post(
-          "http://localhost:5000/api/patient/save",
+          "https://backend-health-care-wrp.vercel.app/api/patient/save",
           formData,
           {
             headers: {
