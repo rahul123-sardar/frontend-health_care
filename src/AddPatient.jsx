@@ -34,6 +34,8 @@ const AddPatient = () => {
           }
         );
 
+        console.log(formData);
+
         console.log("Patient added:", res.data);
         alert("Patient added successfully!");
         resetForm(); // clear form
