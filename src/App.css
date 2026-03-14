@@ -121,8 +121,9 @@ header h1 {
 }
 
 .patient-image img {
-  width: 120px;
-  height: 120px;
+  width: 500px;
+  height: 500px;
+  object-fit: cover;
   border-radius: 50%;
   border: 3px solid #cbd5e1;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
