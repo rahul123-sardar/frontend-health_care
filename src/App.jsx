@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import AddPatient from "./AddPatient";
 
 function App() {
   const [patients, setPatients] = useState([]);
@@ -39,7 +38,6 @@ function App() {
 
   return (
     <div className="app-container">
-    <AddPatient />
       <header>
         <h1>Secure PHI Access Simulator</h1>
       </header>
