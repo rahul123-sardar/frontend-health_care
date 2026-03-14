@@ -116,7 +116,7 @@ header h1 {
 
 /* ---------- PATIENT IMAGE ---------- */
 .patient-image {
-  text-align: center;
+  text-align: bottom;
   margin-bottom: 15px;
 }
 
