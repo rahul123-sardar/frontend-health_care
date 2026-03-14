@@ -121,10 +121,10 @@ header h1 {
 }
 
 .patient-image img {
-  width: 500px;
-  height: 500px;
-  object-fit: cover;
-  border-radius: 50%;
+  width: 120px;           /* smaller, fits card */
+  height: 120px;          /* same as width for perfect circle */
+  object-fit: cover;      /* crop image to fill circle */
+  border-radius: 50%;     /* perfect circle */
   border: 3px solid #cbd5e1;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
