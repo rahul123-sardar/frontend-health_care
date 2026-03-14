@@ -17,25 +17,25 @@ function App() {
   });
 
   // Backend API
-  const API_URL =
-    import.meta.env.VITE_BACKEND_URL ||
-    "https://backend-health-care-wrp.vercel.app/api/patient";
+ const API_URL = "https://backend-health-care-wrp.vercel.app/api/patient"; // use this URL
 
-  // Fetch patients
+// Example fetch call
+useEffect(() => {
   const fetchPatients = async () => {
-  try {
-    const res = await axios.get(API_URL);  // ← use here
-    setPatients(res.data);
-  } catch (err) {
-    console.error("Failed to fetch patients:", err);
-    setPatients([]);
-  }
-};
+    try {
+      const res = await axios.get(API_URL);
+      console.log("Fetched patients:", res.data);
+      setPatients(res.data);
+    } catch (err) {
+      console.error("Failed to fetch patients:", err);
+    }
+  };
 
+  fetchPatients();
+}, []);
 
-  useEffect(() => {
-    fetchPatients();
-  }, []);
+ 
+
 
   // Handle form inputs
   const handleChange = (e) => {
