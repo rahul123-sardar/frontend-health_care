@@ -23,15 +23,15 @@ function App() {
 
   // Fetch patients
   const fetchPatients = async () => {
-    try {
-      const res = await axios.get(API_URL);
-      console.log("Fetched patients:", res.data);
-      setPatients(res.data);
-    } catch (err) {
-      console.error("Error fetching patients:", err);
-      setPatients([]);
-    }
-  };
+  try {
+    const res = await axios.get(API_URL);  // ← use here
+    setPatients(res.data);
+  } catch (err) {
+    console.error("Failed to fetch patients:", err);
+    setPatients([]);
+  }
+};
+
 
   useEffect(() => {
     fetchPatients();
@@ -47,37 +47,24 @@ function App() {
   };
 
   // Submit form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const data = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== null && value !== "") {
-          data.append(key, key === "patientId" || key === "billingCode" ? Number(value) : value);
-        }
-      });
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value) data.append(key, value);
+    });
 
-      await axios.post(API_URL, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    await axios.post(API_URL, data, {   // ← use here
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-      alert("Patient added!");
-      setFormData({
-        patientId: "",
-        name: "",
-        vitals: "",
-        billingCode: "",
-        diagnosis: "",
-        notes: "",
-        image: null,
-      });
+    fetchPatients();
+  } catch (err) {
+    console.error("Failed to add patient:", err);
+  }
+};
 
-      fetchPatients();
-    } catch (err) {
-      console.error("Error adding patient:", err);
-      alert("Failed to add patient.");
-    }
-  };
 
   // Role-based fields
   const roles = {
