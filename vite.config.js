@@ -1,11 +1,8 @@
+// vite.config.js
 export default {
   server: {
     proxy: {
-      '/api': {
-        target: 'https://backend-health-care-xr5d.vercel.app',
-        changeOrigin: true,
-        secure: false,
-      },
+      "/api": "https://backend-health-care-97bf.vercel.app",
     },
   },
 };

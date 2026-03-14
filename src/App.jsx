@@ -17,8 +17,8 @@ function App() {
   });
 
   const API_BASE_URL =
-    import.meta.env.VITE_BACKEND_URL ||
-    "https://backend-health-care-97bf.vercel.app/api/patient";
+  import.meta.env.VITE_BACKEND_URL ||
+  "https://frontend-health-care-pink.vercel.app/api/proxy";
 
   // Fetch patients from serverless backend
   const fetchPatients = async () => {
