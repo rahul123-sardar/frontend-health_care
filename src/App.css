@@ -121,17 +121,17 @@ header h1 {
 }
 
 .patient-image img {
-  width: 120px;           /* smaller, fits card */
-  height: 120px;          /* same as width for perfect circle */
-  object-fit: cover;      /* crop image to fill circle */
-  border-radius: 50%;     /* perfect circle */
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
   border: 3px solid #cbd5e1;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
 }
 
 .patient-image img:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 /* ---------- PATIENT DETAILS ---------- */
