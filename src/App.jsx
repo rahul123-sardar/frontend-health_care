@@ -16,15 +16,16 @@ function App() {
     image: null,
   });
 
-  // Backend URL (Vercel serverless)
+  // Backend URL
   const API_BASE_URL =
     import.meta.env.VITE_BACKEND_URL ||
-    "https://backend-health-care-wrp.vercel.app/api/patient"; // replace with your deployed URL
+    "https://backend-health-care-wrp.vercel.app/api/patient";
 
   // Fetch patients
   const fetchPatients = async () => {
     try {
       const res = await axios.get(API_BASE_URL);
+      console.log("Fetched patients:", res.data); // check console
       setPatients(res.data);
     } catch (err) {
       console.error("Failed to fetch patients:", err);
@@ -33,21 +34,8 @@ function App() {
   };
 
   useEffect(() => {
-  const fetchPatients = async () => {
-    try {
-      const res = await axios.get(API_BASE_URL);
-      console.log("Fetched patients:", res.data); // ✅ should print array
-      setPatients(res.data);
-    } catch (err) {
-      console.error("Failed to fetch patients:", err);
-    }
-  };
-
-  fetchPatients();
-}, []);
-
-
-
+    fetchPatients();
+  }, []);
 
   const roleConfig = {
     Nurse: {
@@ -164,7 +152,7 @@ function App() {
           patients.map((patient) => {
             const config = roleConfig[role];
             return (
-              <div key={patient._id} className={`patient-box ${config.className}`}>
+              <div key={patient._id || patient.patientId} className={`patient-box ${config.className}`}>
                 <h2 className="font-bold">{config.title}</h2>
                 {config.showImage && (
                   <img
