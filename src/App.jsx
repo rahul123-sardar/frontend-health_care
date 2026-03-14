@@ -16,19 +16,17 @@ function App() {
     image: null,
   });
 
-  // Backend URL
-  const API_BASE_URL =
+  const API_URL =
     import.meta.env.VITE_BACKEND_URL ||
     "https://backend-health-care-wrp.vercel.app/api/patient";
 
   // Fetch patients
   const fetchPatients = async () => {
     try {
-      const res = await axios.get(API_BASE_URL);
-      console.log("Fetched patients:", res.data); // check console
+      const res = await axios.get(API_URL);
       setPatients(res.data);
     } catch (err) {
-      console.error("Failed to fetch patients:", err);
+      console.error(err);
       setPatients([]);
     }
   };
@@ -37,54 +35,27 @@ function App() {
     fetchPatients();
   }, []);
 
-  const roleConfig = {
-    Nurse: {
-      title: "Nurse View",
-      className: "nurse-view",
-      fields: ["patientId", "name", "vitals", "diagnosis", "notes"],
-      showImage: true,
-    },
-    Billing: {
-      title: "Billing Clerk View",
-      className: "billing-view",
-      fields: ["patientId", "name", "billingCode"],
-      showImage: true,
-      accessDenied: "Diagnosis & Notes are encrypted (Access denied)",
-    },
-    Unauthorized: {
-      title: "ACCESS DENIED",
-      className: "denied",
-    },
-  };
-
-  // Form input handler
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: name === "image" ? files[0] : value,
-    });
+    }));
   };
 
-  // Submit new patient
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        if (value !== null && value !== "") {
-          data.append(
-            key,
-            key === "patientId" || key === "billingCode" ? Number(value) : value
-          );
+        if (value) {
+          data.append(key, key === "patientId" || key === "billingCode" ? Number(value) : value);
         }
       });
 
-      await axios.post(API_BASE_URL, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.post(API_URL, data, { headers: { "Content-Type": "multipart/form-data" } });
 
-      alert("Patient added successfully!");
+      alert("Patient added!");
       setFormData({
         patientId: "",
         name: "",
@@ -97,90 +68,55 @@ function App() {
 
       fetchPatients();
     } catch (err) {
-      console.error("Failed to add patient:", err);
+      console.error(err);
       alert("Failed to add patient.");
     }
   };
 
+  const roles = {
+    Nurse: ["patientId", "name", "vitals", "diagnosis", "notes"],
+    Billing: ["patientId", "name", "billingCode"],
+    Unauthorized: [],
+  };
+
   return (
     <div className="main-container">
-      {/* Add Patient Form */}
-      <div className="card">
-        <h2 className="title">Add Patient</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          {["patientId", "name", "vitals", "billingCode", "diagnosis", "notes"].map(
-            (field) => (
-              <input
-                key={field}
-                type={field.includes("Code") || field.includes("Id") ? "number" : "text"}
-                name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                required
-              />
-            )
-          )}
-          <input type="file" name="image" onChange={handleChange} />
-          <button type="submit">Add Patient</button>
-        </form>
-      </div>
+      <h2>Add Patient</h2>
+      <form onSubmit={handleSubmit} className="form">
+        {["patientId", "name", "vitals", "billingCode", "diagnosis", "notes"].map(key => (
+          <input
+            key={key}
+            name={key}
+            value={formData[key]}
+            onChange={handleChange}
+            placeholder={key}
+            required
+          />
+        ))}
+        <input type="file" name="image" onChange={handleChange} />
+        <button type="submit">Add Patient</button>
+      </form>
 
-      {/* Role Selection */}
-      <div className="card">
-        <h1 className="title">Secure PHI Access Simulator</h1>
-        <div className="button-group">
-          {["Nurse", "Billing", "Unauthorized"].map((r) => (
-            <button
-              key={r}
-              onClick={() => setRole(r)}
-              className={`btn ${
-                r === "Nurse"
-                  ? "btn-nurse"
-                  : r === "Billing"
-                  ? "btn-billing"
-                  : "btn-unauthorized"
-              }`}
-            >
-              {r}
-            </button>
-          ))}
-        </div>
+      <h2>Select Role</h2>
+      {Object.keys(roles).map(r => (
+        <button key={r} onClick={() => setRole(r)}>{r}</button>
+      ))}
 
-        {/* Patient List */}
-        {role && role !== "Unauthorized" &&
-          patients.map((patient) => {
-            const config = roleConfig[role];
-            return (
-              <div key={patient._id || patient.patientId} className={`patient-box ${config.className}`}>
-                <h2 className="font-bold">{config.title}</h2>
-                {config.showImage && (
-                  <img
-                    src={patient.image || "https://via.placeholder.com/120"}
-                    width="120"
-                    alt="patient"
-                  />
-                )}
-                {config.fields.map((field) => (
-                  <p key={field}>
-                    <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong>{" "}
-                    {patient[field] ?? "-"}
-                  </p>
-                ))}
-                {role === "Billing" && config.accessDenied && (
-                  <p className="access-denied">{config.accessDenied}</p>
-                )}
-              </div>
-            );
-          })}
-
-        {/* Unauthorized */}
-        {role === "Unauthorized" && (
-          <div className={`patient-box ${roleConfig.Unauthorized.className}`}>
-            <h2>{roleConfig.Unauthorized.title}</h2>
+      <h2>Patients</h2>
+      {role === "Unauthorized" ? (
+        <p>Access Denied</p>
+      ) : (
+        patients.map(p => (
+          <div key={p._id || p.patientId} className="patient-card">
+            {roles[role].map(field => (
+              <p key={field}>
+                <strong>{field}: </strong>{p[field] || "-"}
+              </p>
+            ))}
+            {p.image && <img src={p.image} alt="patient" width="120" />}
           </div>
-        )}
-      </div>
+        ))
+      )}
     </div>
   );
 }
