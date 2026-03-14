@@ -1,79 +1,154 @@
-body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background:#f3f4f6;
+/* App.css */
+
+/* ---------- GENERAL RESET ---------- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
 }
 
-.main-container{
-    padding:30px;
-    min-height:100vh;
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.card{
-    max-width:800px;
-    margin:auto;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0px 4px 10px rgba(0,0,0,0.1);
+/* ---------- HEADER ---------- */
+header {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.title{
-    font-size:28px;
-    font-weight:bold;
-    color:#1e40af;
-    margin-bottom:20px;
+header h1 {
+  color: #1f2937;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
-.button-group{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
+/* ---------- ROLE SELECTION ---------- */
+.role-section {
+  margin-bottom: 30px;
+  text-align: center;
 }
 
-.btn{
-    padding:10px 16px;
-    border:none;
-    border-radius:6px;
-    color:white;
-    cursor:pointer;
+.role-section h2 {
+  margin-bottom: 10px;
+  color: #111827;
 }
 
-.btn-nurse{
-    background:#16a34a;
+.role-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
-.btn-billing{
-    background:#eab308;
+.role-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s all ease;
+  color: white;
+  font-weight: 600;
 }
 
-.btn-unauthorized{
-    background:#ef4444;
+.role-btn.nurse {
+  background-color: #3b82f6; /* Blue */
 }
 
-.patient-box{
-    padding:15px;
-    border-radius:6px;
-    margin-bottom:10px;
+.role-btn.billing {
+  background-color: #10b981; /* Green */
 }
 
-.nurse-view{
-    background:#ecfdf5;
-    border:2px solid #16a34a;
+.role-btn.unauthorized {
+  background-color: #ef4444; /* Red */
 }
 
-.billing-view{
-    background:#fefce8;
-    border:2px solid #eab308;
+.role-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 
-.denied{
-    background:#fee2e2;
-    border:2px solid #ef4444;
-    text-align:center;
+/* ---------- PATIENT SECTION ---------- */
+.patients-section {
+  margin-top: 20px;
 }
 
-.red-text{
-    color:#dc2626;
-    margin-top:10px;
+.patients-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ---------- ACCESS DENIED ---------- */
+.access-denied {
+  color: #ef4444;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ---------- PATIENT GRID ---------- */
+.patients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ---------- PATIENT CARD ---------- */
+.patient-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 15px;
+  transition: 0.2s all ease;
+}
+
+.patient-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* ---------- PATIENT IMAGE ---------- */
+.patient-image {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.patient-image img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+/* ---------- PATIENT DETAILS ---------- */
+.patient-details p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.patient-details strong {
+  color: #111827;
+}
+
+/* ---------- LOADING / EMPTY STATES ---------- */
+.patients-section p {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280; /* Gray */
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 600px) {
+  .role-buttons {
+    flex-direction: column;
+  }
+
+  .patients-grid {
+    grid-template-columns: 1fr;
+  }
 }
