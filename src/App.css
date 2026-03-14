@@ -121,6 +121,7 @@ header h1 {
   width: 120px;
   height: 120px;
   object-fit: cover;
+  border-radius: 20%;
   border: 2px solid #ddd;
 }
 
