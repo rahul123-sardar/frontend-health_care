@@ -18,7 +18,7 @@ function App() {
 
   const API_BASE_URL =
   import.meta.env.VITE_BACKEND_URL ||
-  "https://backend-health-care-wrp.vercel.app/api/patient/proxy";
+  "https://backend-health-care-wrp.vercel.app/api/patient";
 
   // Fetch patients from serverless backend
   const fetchPatients = async () => {
@@ -74,9 +74,10 @@ function App() {
       });
 
       // POST to serverless endpoint (no /save)
-      await axios.post("/api/patient", data, {
+      await axios.post(API_BASE_URL, data, {
   headers: { "Content-Type": "multipart/form-data" },
 });
+
 
       alert("Patient added successfully!");
       setFormData({
