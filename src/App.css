@@ -116,13 +116,13 @@ header h1 {
 
 /* ---------- PATIENT IMAGE ---------- */
 .patient-image {
-  text-align: bottom;
+  text-align: center;
   margin-bottom: 15px;
 }
 
 .patient-image img {
-  width: 90px;
-  height: 90px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 50%;
   border: 3px solid #cbd5e1;
