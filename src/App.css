@@ -118,11 +118,17 @@ header h1 {
 }
 
 .patient-image img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 20%;
-  border: 2px solid #ddd;
+  width: 120px;           /* perfect size */
+  height: 120px;          /* keep width = height for perfect circle */
+  object-fit: cover;      /* crop image to fit circle without distortion */
+  border-radius: 50%;     /* perfect circle */
+  border: 2px solid #ddd; /* subtle border */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* optional subtle shadow */
+  transition: transform 0.2s ease;
+}
+
+.patient-image img:hover {
+  transform: scale(1.05); /* slight zoom effect on hover */
 }
 
 /* ---------- PATIENT DETAILS ---------- */
