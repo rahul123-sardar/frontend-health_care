@@ -17,19 +17,19 @@ function App() {
   });
 
   const API_BASE_URL =
-  import.meta.env.VITE_BACKEND_URL ||
-  "https://backend-health-care-wrp.vercel.app/api/patient";
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://backend-health-care-wrp.vercel.app/api/patient";
 
-  // Fetch patients from serverless backend
+  // Fetch all patients
   const fetchPatients = async () => {
-  try {
-    const res = await axios.get(API_BASE_URL);
-    setPatients(res.data);
-  } catch (err) {
-    console.error("Failed to fetch patients:", err);
-    setPatients([]);
-  }
-};
+    try {
+      const res = await axios.get(API_BASE_URL);
+      setPatients(res.data);
+    } catch (err) {
+      console.error("Failed to fetch patients:", err);
+      setPatients([]);
+    }
+  };
 
   useEffect(() => {
     fetchPatients();
@@ -57,7 +57,10 @@ function App() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData({ ...formData, [name]: name === "image" ? files[0] : value });
+    setFormData({
+      ...formData,
+      [name]: name === "image" ? files[0] : value,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -73,11 +76,9 @@ function App() {
         }
       });
 
-      // POST to serverless endpoint (no /save)
       await axios.post(API_BASE_URL, data, {
-  headers: { "Content-Type": "multipart/form-data" },
-});
-
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       alert("Patient added successfully!");
       setFormData({
@@ -89,7 +90,6 @@ function App() {
         notes: "",
         image: null,
       });
-
       fetchPatients();
     } catch (err) {
       console.error("Failed to add patient:", err);
@@ -107,7 +107,7 @@ function App() {
             (field) => (
               <input
                 key={field}
-                type="text"
+                type={field.includes("Code") || field.includes("Id") ? "number" : "text"}
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
