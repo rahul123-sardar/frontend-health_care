@@ -80,7 +80,7 @@ function App() {
             patients.map((p) => (
               <div key={p._id || p.patientId} className="patient-card">
                 <div className="patient-image">
-                  <img
+                  <img style={{height:"150px",}}
                     src={p.image || "https://via.placeholder.com/120"}
                     alt={p.name || "patient"}
                   />
