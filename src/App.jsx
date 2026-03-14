@@ -16,6 +16,7 @@ function App() {
     image: null,
   });
 
+  // Backend API
   const API_URL =
     import.meta.env.VITE_BACKEND_URL ||
     "https://backend-health-care-wrp.vercel.app/api/patient";
@@ -24,9 +25,10 @@ function App() {
   const fetchPatients = async () => {
     try {
       const res = await axios.get(API_URL);
+      console.log("Fetched patients:", res.data);
       setPatients(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching patients:", err);
       setPatients([]);
     }
   };
@@ -35,6 +37,7 @@ function App() {
     fetchPatients();
   }, []);
 
+  // Handle form inputs
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData(prev => ({
@@ -43,17 +46,20 @@ function App() {
     }));
   };
 
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        if (value) {
+        if (value !== null && value !== "") {
           data.append(key, key === "patientId" || key === "billingCode" ? Number(value) : value);
         }
       });
 
-      await axios.post(API_URL, data, { headers: { "Content-Type": "multipart/form-data" } });
+      await axios.post(API_URL, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       alert("Patient added!");
       setFormData({
@@ -68,11 +74,12 @@ function App() {
 
       fetchPatients();
     } catch (err) {
-      console.error(err);
+      console.error("Error adding patient:", err);
       alert("Failed to add patient.");
     }
   };
 
+  // Role-based fields
   const roles = {
     Nurse: ["patientId", "name", "vitals", "diagnosis", "notes"],
     Billing: ["patientId", "name", "billingCode"],
@@ -98,9 +105,13 @@ function App() {
       </form>
 
       <h2>Select Role</h2>
-      {Object.keys(roles).map(r => (
-        <button key={r} onClick={() => setRole(r)}>{r}</button>
-      ))}
+      <div className="button-group">
+        {Object.keys(roles).map(r => (
+          <button key={r} onClick={() => setRole(r)}>
+            {r}
+          </button>
+        ))}
+      </div>
 
       <h2>Patients</h2>
       {role === "Unauthorized" ? (
@@ -110,10 +121,16 @@ function App() {
           <div key={p._id || p.patientId} className="patient-card">
             {roles[role].map(field => (
               <p key={field}>
-                <strong>{field}: </strong>{p[field] || "-"}
+                <strong>{field}: </strong>
+                {p[field] || "-"}
               </p>
             ))}
-            {p.image && <img src={p.image} alt="patient" width="120" />}
+            {/* Show image or placeholder */}
+            <img
+              src={p.image ? p.image : "https://via.placeholder.com/120"}
+              alt="patient"
+              width="120"
+            />
           </div>
         ))
       )}
