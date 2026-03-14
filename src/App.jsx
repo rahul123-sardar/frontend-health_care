@@ -19,7 +19,7 @@ function App() {
 
   const API_BASE_URL =
     import.meta.env.VITE_BACKEND_URL ||
-    "https://localhost:5000/api/patient";
+    "http://localhost:5000/api/patient";
 
   // Fetch patients
   const fetchPatients = async () => {
