@@ -121,13 +121,13 @@ header h1 {
 }
 
 .patient-image img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid #cbd5e1;
+  width: 150px;           /* square width */
+  height: 150px;          /* square height */
+  object-fit: cover;      /* crop to fit square without distortion */
+  border-radius: 8px;     /* slightly rounded corners */
+  border: 2px solid #cbd5e1; 
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: transform 0.1s ease;
+  transition: transform 0.3s ease;
 }
 
 .patient-image img:hover {
