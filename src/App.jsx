@@ -16,10 +16,10 @@ function App() {
     image: null,
   });
 
-  // Direct backend URL (no proxy)
+  // Backend URL (Vercel serverless)
   const API_BASE_URL =
     import.meta.env.VITE_BACKEND_URL ||
-    "https://backend-health-care-wrp.vercel.app/api/patient";
+    "https://backend-health-care-wrp.vercel.app/api/patient"; // replace with your deployed URL
 
   // Fetch patients
   const fetchPatients = async () => {
@@ -93,6 +93,7 @@ function App() {
         notes: "",
         image: null,
       });
+
       fetchPatients();
     } catch (err) {
       console.error("Failed to add patient:", err);
@@ -152,8 +153,12 @@ function App() {
             return (
               <div key={patient._id} className={`patient-box ${config.className}`}>
                 <h2 className="font-bold">{config.title}</h2>
-                {config.showImage && patient.image && (
-                  <img src={patient.image} width="120" alt="patient" />
+                {config.showImage && (
+                  <img
+                    src={patient.image || "https://via.placeholder.com/120"}
+                    width="120"
+                    alt="patient"
+                  />
                 )}
                 {config.fields.map((field) => (
                   <p key={field}>
