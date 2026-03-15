@@ -104,7 +104,7 @@ function App() {
                   <img
                     src={p.image || "https://via.placeholder.com/150"}
                     alt={p.name || "patient"}
-                    className="w-20 h-40 object-cover rounded-full border border-gray-200 shadow-sm"
+                    className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm"
                   />
                 </div>
 
