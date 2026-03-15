@@ -100,11 +100,11 @@ function App() {
                 className="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center transition transform hover:-translate-y-1 hover:shadow-xl"
               >
                 {/* Patient Image */}
-                <div className="mb-4 w-4 h-4">
+                <div className="mb-4 w-24 h-24">
                   <img
                     src={p.image || "https://via.placeholder.com/150"}
                     alt={p.name || "patient"}
-                    className="w-full h-full object-cover rounded-full border border-gray-200 shadow-sm"
+                    className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm"
                   />
                 </div>
 
