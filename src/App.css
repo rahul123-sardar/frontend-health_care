@@ -116,9 +116,9 @@ header h1 {
 }
 
 .patient-image img {
-  width: 600px;          /* wider */
-  height: 600px;         /* taller */
-  object-fit: cover;     /* crop image nicely */
+  width: 100%;           /* fill the card width */
+  height: auto;          /* maintain original aspect ratio */
+  object-fit: contain;   /* show the full image, no cropping */
   border-radius: 12px;   /* slightly rounded corners */
   border: 2px solid #cbd5e1;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -126,9 +126,8 @@ header h1 {
 }
 
 .patient-image img:hover {
-  transform: scale(1.05); /* slight zoom on hover */
+  transform: scale(1.03); /* subtle zoom */
 }
-
 /* ---------- PATIENT DETAILS ---------- */
 .patient-details p {
   margin: 5px 0;
