@@ -2,17 +2,17 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f4f8;
+  background-color: #f9fafb;
   color: #2c3e50;
 }
 
 /* ---------- APP CONTAINER ---------- */
 .app-container {
   min-height: 100vh;
-  padding: 40px 16px;
-  background-color: #f0f4f8;
+  padding: 2.5rem 1rem;
   max-width: 1440px;
   margin: 0 auto;
+  background-color: #f9fafb;
 }
 
 /* ---------- HEADER ---------- */
@@ -24,7 +24,7 @@ header {
 header h1 {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #1d4ed8; /* Blue */
+  color: #1d4ed8;
 }
 
 header p {
@@ -47,13 +47,13 @@ header p {
 }
 
 .role-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
   border: none;
   color: white;
 }
@@ -93,7 +93,7 @@ header p {
 
 .patients-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
 }
 
@@ -117,8 +117,8 @@ header p {
 /* ---------- PATIENT IMAGE ---------- */
 .patient-image {
   margin-bottom: 1rem;
-  width: 6rem;
-  height: 6rem;
+  width: 5rem; /* 80px */
+  height: 5rem; /* 80px */
 }
 
 .patient-image img {
@@ -186,7 +186,7 @@ header p {
   .patients-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .role-buttons {
     flex-direction: column;
     gap: 1rem;
