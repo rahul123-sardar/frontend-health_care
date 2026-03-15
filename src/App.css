@@ -112,7 +112,7 @@ header h1 {
 .patient-image {
   width: 100%;
   max-width: 500px;      /* maximum width of image */
-  height: 500px;         /* fixed height so image is visible fully */
+  height: 1000px;         /* fixed height so image is visible fully */
   margin-bottom: 15px;
 }
 
