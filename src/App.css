@@ -2,56 +2,57 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #eef2f7;
-  color: #333;
+  background-color: #f0f4f8;
+  color: #2c3e50;
 }
 
 .app-container {
-  max-width: 12000px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 25px 15px;
 }
 
 /* ---------- HEADER ---------- */
 header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 header h1 {
-  color: #1e3a8a; /* deep blue */
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: 700;
+  color: #1d4ed8; /* modern deep blue */
 }
 
 /* ---------- ROLE SELECTION ---------- */
 .role-section {
-  margin-bottom: 30px;
   text-align: center;
+  margin-bottom: 35px;
 }
 
 .role-section h2 {
-  margin-bottom: 10px;
+  font-size: 1.4rem;
   color: #1e293b;
+  margin-bottom: 15px;
 }
 
 .role-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 18px;
   flex-wrap: wrap;
 }
 
 .role-btn {
-  padding: 12px 24px;
+  padding: 12px 28px;
   font-size: 1rem;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.2s all ease;
-  color: white;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
 }
 
 .role-btn.nurse {
@@ -68,66 +69,60 @@ header h1 {
 
 .role-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 /* ---------- PATIENT SECTION ---------- */
-.patients-section {
-  margin-top: 20px;
-}
-
 .patients-section h2 {
   text-align: center;
-  margin-bottom: 25px;
+  font-size: 1.6rem;
+  margin-bottom: 28px;
   color: #1e293b;
-  font-size: 1.5rem;
 }
 
 /* ---------- ACCESS DENIED ---------- */
 .access-denied {
-  color: #ef4444;
-  font-weight: bold;
   text-align: center;
+  color: #dc2626;
+  font-weight: 600;
   font-size: 1.1rem;
 }
 
 /* ---------- PATIENT GRID ---------- */
 .patients-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
 }
 
 /* ---------- PATIENT CARD ---------- */
 .patient-card {
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  background-color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   padding: 20px;
-  transition: 0.3s all ease;
-  position: relative;
-  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .patient-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-/* ---------- PATIENT IMAGE ---------- */
+/* ---------- PATIENT IMAGE (SQUARE) ---------- */
 .patient-image {
   text-align: center;
   margin-bottom: 15px;
 }
 
 .patient-image img {
-  width: 150px;           /* square width */
-  height: 150px;          /* square height */
-  object-fit: cover;      /* crop to fit square without distortion */
-  border-radius: 0;     /* slightly rounded corners */
-  border: 2px solid #cbd5e1; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px; /* slightly rounded square */
+  border: 2px solid #cbd5e1;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  transition: transform 0.25s ease;
 }
 
 .patient-image img:hover {
@@ -136,23 +131,24 @@ header h1 {
 
 /* ---------- PATIENT DETAILS ---------- */
 .patient-details p {
-  margin: 6px 0;
+  margin: 5px 0;
   font-size: 0.95rem;
-}
-
-.patient-details strong {
   color: #1e293b;
 }
 
-/* ---------- ENCRYPTED BADGE FOR BILLING ---------- */
+.patient-details strong {
+  font-weight: 600;
+}
+
+/* ---------- ENCRYPTED FIELD BADGE ---------- */
 .patient-details .access-denied {
   display: inline-block;
-  background-color: #fef2f2; /* soft red */
+  background-color: #fee2e2;
   color: #b91c1c;
-  padding: 2px 6px;
+  padding: 3px 7px;
   border-radius: 6px;
   font-size: 0.85rem;
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
 /* ---------- LOADING / EMPTY STATES ---------- */
@@ -174,7 +170,7 @@ header h1 {
   .patients-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .role-buttons {
     flex-direction: column;
     gap: 12px;
