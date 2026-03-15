@@ -54,7 +54,7 @@ function App() {
             <button
               key={r}
               onClick={() => setRole(r)}
-              className={`px-6 py-2 font-semibold rounded-full shadow-md transition hover:scale-105 ${
+              className={`px-6 py-2 font-semibold  shadow-md transition hover:scale-105 ${
                 r === "Nurse"
                   ? "bg-blue-500 text-white hover:bg-blue-600"
                   : r === "Billing"
