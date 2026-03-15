@@ -1,7 +1,7 @@
 .img {
   height: 100%;
   width: 100%;
-  object-fit: cover;   /* Makes image fit nicely */
-  border-radius: 50%;  /* Makes image circular */
+     /* Makes image fit nicely */
+   /* Makes image circular */
 }
 
