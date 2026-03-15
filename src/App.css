@@ -116,13 +116,13 @@ header h1 {
 }
 
 .patient-image img {
-  width: 100%;           /* fill the card width */
-  height: auto;          /* maintain original aspect ratio */
-  object-fit: contain;   /* show the full image, no cropping */
-  border-radius: 12px;   /* slightly rounded corners */
-  border: 2px solid #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease;
+  width: 100% !important;           /* fill the card width */
+  height: auto !important;          /* maintain original aspect ratio */
+  object-fit: contain !important;   /* show the full image, no cropping */
+  border-radius: 12px !important;   /* slightly rounded corners */
+  border: 2px solid #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  transition: transform 0.3s ease !important;
 }
 
 .patient-image img:hover {
