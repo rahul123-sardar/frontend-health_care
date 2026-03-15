@@ -97,7 +97,7 @@ function App() {
             patients.map((p) => (
               <div
                 key={p._id || p.patientId}
-                className="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center transition transform hover:-translate-y-1 hover:shadow-xl patient-img"
+                className="patient-img"
               >
                 {/* Patient Image */}
                 <div className="mb-4 w-15 h-15">
