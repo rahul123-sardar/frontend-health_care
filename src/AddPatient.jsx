@@ -85,7 +85,7 @@ const AddPatient = () => {
         value={formik.values.diagnosis}
         onChange={formik.handleChange}
       />
-      <input
+      <textarea
         type="text"
         name="notes"
         placeholder="Notes"
