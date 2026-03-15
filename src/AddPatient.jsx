@@ -88,7 +88,7 @@ const AddPatient = () => {
       <textarea
         type="text"
         name="notes"
-        rows={1}
+        rows={5}
         cols={10}
         placeholder="Notes"
         value={formik.values.notes}
