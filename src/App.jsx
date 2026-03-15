@@ -89,7 +89,7 @@ function App() {
         )}
 
         {/* Patients Grid */}
-        <div className="">
+        <div className="patient-grid">
           {!loading &&
             role &&
             role !== "Unauthorized" &&

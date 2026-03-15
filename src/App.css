@@ -1,12 +1,16 @@
-.img{
-  height: 20px;
-  width: 20px;
+.img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;   /* Makes image fit nicely */
+  border-radius: 50%;  /* Makes image circular */
 }
 
-.patient-img{
-
+.patient-img {
   display: flex;
-
+  justify-content: center;
+  align-items: center;
   height: 100px;
   width: 100px;
+  overflow: hidden;    /* Prevent image overflow */
+  border-radius: 50%;  /* Circle container */
 }
