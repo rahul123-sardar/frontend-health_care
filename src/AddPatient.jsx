@@ -88,8 +88,8 @@ const AddPatient = () => {
       <textarea
         type="text"
         name="notes"
-        rows={10}
-        cols={1}
+        rows={1}
+        cols={5}
         placeholder="Notes"
         value={formik.values.notes}
         onChange={formik.handleChange}
