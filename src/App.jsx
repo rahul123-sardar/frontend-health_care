@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import AddPatient from "./AddPatient";
-
+import "./App.css";
 
 function App() {
   const [patients, setPatients] = useState([]);
@@ -104,7 +104,7 @@ function App() {
                   <img
                     src={p.image || "https://via.placeholder.com/150"}
                     alt={p.name || "patient"}
-                    className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm"
+                    className="img"
                   />
                 </div>
 
