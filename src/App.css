@@ -116,8 +116,8 @@ header h1 {
 }
 
 .patient-image img {
-  width: 200px;          /* wider */
-  height: 200px;         /* taller */
+  width: 600px;          /* wider */
+  height: 600px;         /* taller */
   object-fit: cover;     /* crop image nicely */
   border-radius: 12px;   /* slightly rounded corners */
   border: 2px solid #cbd5e1;
