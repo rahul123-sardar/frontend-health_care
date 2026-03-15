@@ -37,25 +37,25 @@ function App() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-100 min-h-screen">
+    <div className="min-h-screen bg-gray-50 py-10 px-4 md:px-8 lg:px-16">
       <AddPatient />
 
       {/* Header */}
-      <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-blue-700">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl font-extrabold text-blue-700">
           Secure PHI Access Simulator
         </h1>
+        <p className="text-gray-600 mt-2">Select your role to view patient data</p>
       </header>
 
       {/* Role Selection */}
-      <section className="text-center mb-10">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Select Role</h2>
-        <div className="flex justify-center flex-wrap gap-4">
+      <section className="text-center mb-12">
+        <div className="flex justify-center flex-wrap gap-6">
           {Object.keys(roles).map((r) => (
             <button
               key={r}
               onClick={() => setRole(r)}
-              className={`px-6 py-2 font-semibold rounded-lg shadow-md transition transform hover:-translate-y-1 ${
+              className={`px-6 py-3 font-semibold rounded-lg shadow-md transition transform hover:-translate-y-1 hover:shadow-xl ${
                 r === "Nurse"
                   ? "bg-blue-500 text-white hover:bg-blue-600"
                   : r === "Billing"
@@ -71,10 +71,11 @@ function App() {
 
       {/* Patient List */}
       <section>
-        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-6">
+        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-8">
           Patients
         </h2>
 
+        {/* Messages */}
         {loading && <p className="text-center text-gray-500">Loading patients...</p>}
         {!loading && role === "" && (
           <p className="text-center text-gray-500">Please select a role to view patients.</p>
@@ -86,7 +87,8 @@ function App() {
           <p className="text-center text-gray-500">No patients found.</p>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {/* Patients Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {!loading &&
             role &&
             role !== "Unauthorized" &&
@@ -94,14 +96,14 @@ function App() {
             patients.map((p) => (
               <div
                 key={p._id || p.patientId}
-                className="bg-white rounded-xl shadow-lg p-4 transition transform hover:-translate-y-1 hover:shadow-xl"
+                className="bg-white rounded-2xl shadow-lg p-5 transition transform hover:-translate-y-1 hover:shadow-2xl"
               >
                 {/* Patient Image */}
                 <div className="text-center mb-4">
                   <img
-                    src={p.image || "https://via.placeholder.com/150"}
+                    src={p.image || "https://via.placeholder.com/300"}
                     alt={p.name || "patient"}
-                    className="w-full h-60 object-contain rounded-lg border border-gray-300 shadow-sm transition-transform hover:scale-105"
+                    className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-contain rounded-xl border border-gray-200 shadow-sm transition-transform hover:scale-105"
                   />
                 </div>
 
@@ -109,7 +111,9 @@ function App() {
                 <div className="text-gray-800 text-sm">
                   {roles[role].map((field) => (
                     <p key={field} className="mb-1">
-                      <span className="font-semibold">{field.charAt(0).toUpperCase() + field.slice(1)}:</span>{" "}
+                      <span className="font-semibold">
+                        {field.charAt(0).toUpperCase() + field.slice(1)}:
+                      </span>{" "}
                       {p[field] ?? "-"}
                     </p>
                   ))}
