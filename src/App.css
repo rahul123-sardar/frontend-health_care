@@ -108,29 +108,7 @@ header h1 {
   align-items: center;
 }
 
-/* ---------- PATIENT IMAGE ---------- */
-/* ---------- PATIENT IMAGE ---------- */
-.patient-image {
-  text-align: center;
-  margin-bottom: 15px;
-  width: 100%;            /* card width */
-  max-width: 500px;       /* max width for larger screens */
-  height: auto;           /* let height adjust to image */
-}
 
-.patient-image img {
-  width: 100%;           /* fill container width */
-  height: auto;          /* maintain original aspect ratio */
-  object-fit: contain;   /* show entire image, no cropping */
-  border-radius: 12px;   /* rounded corners */
-  border: 2px solid #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease;
-}
-
-.patient-image img:hover {
-  transform: scale(1.03);
-}
 
 /* ---------- PATIENT DETAILS ---------- */
 .patient-details p {
