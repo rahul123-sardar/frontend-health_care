@@ -5,12 +5,3 @@
   border-radius: 50%;  /* Makes image circular */
 }
 
-.patient-img {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-  width: 100px;
-  overflow: hidden;    /* Prevent image overflow */
-  border-radius: 50%;  /* Circle container */
-}
